@@ -62,7 +62,7 @@ namespace projectcars.Configuration
             builder.Property(p => p.Asr)
                 .IsRequired();
 
-            builder.Property(p => p.Immobilazer)
+            builder.Property(p => p.Immobilizer)
                 .IsRequired();
 
             builder.Property(p => p.Signaling)

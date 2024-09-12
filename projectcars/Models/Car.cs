@@ -17,7 +17,7 @@
                 bool abs,
                 bool esp,
                 bool asr,
-                bool immobilazer,
+                bool immobilizer,
                 bool signaling
             )
         {
@@ -34,7 +34,7 @@
             Abs = abs;
             Esp = esp;
             Asr = asr;
-            Immobilazer = immobilazer;
+            Immobilizer = immobilizer;
             Signaling = signaling;
         }
 
@@ -53,7 +53,7 @@
                 bool abs,
                 bool esp,
                 bool asr,
-                bool immobilazer,
+                bool immobilizer,
                 bool signaling
             )
         {
@@ -72,7 +72,7 @@
                     abs,
                     esp,
                     asr,
-                    immobilazer,
+                    immobilizer,
                     signaling
                 );
         }
@@ -96,7 +96,7 @@
         //Traction Control
         public bool Asr { get; set; }
         //Immobilizer
-        public bool Immobilazer { get; set; }
+        public bool Immobilizer { get; set; }
         //Signaling
         public bool Signaling { get; set; }
     }

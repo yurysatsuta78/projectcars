@@ -21,7 +21,7 @@
         //Traction Control
         public bool Asr { get; set; }
         //Immobilizer
-        public bool Immobilazer { get; set; }
+        public bool Immobilizer { get; set; }
         //Signaling
         public bool Signaling { get; set; }
         public GenerationEntity? GenerationEntity { get; set; }

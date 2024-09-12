@@ -32,7 +32,7 @@ namespace projectcars.Repositories
                 Abs = car.Abs,
                 Esp = car.Esp,
                 Asr = car.Asr,
-                Immobilazer = car.Immobilazer,
+                Immobilizer = car.Immobilizer,
                 Signaling = car.Signaling,
                 GenerationId = generationId
             };
@@ -86,7 +86,7 @@ namespace projectcars.Repositories
                 carEntity.Abs = car.Abs;
                 carEntity.Esp = car.Esp;
                 carEntity.Asr = car.Asr;
-                carEntity.Immobilazer = car.Immobilazer;
+                carEntity.Immobilizer = car.Immobilizer;
                 carEntity.Signaling = car.Signaling;
 
                 _context.Cars.Update(carEntity);
