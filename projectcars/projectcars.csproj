@@ -18,4 +18,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contracts\Brands\" />
+    <Folder Include="Contracts\Models\" />
+    <Folder Include="Contracts\Generations\" />
+  </ItemGroup>
+
 </Project>
