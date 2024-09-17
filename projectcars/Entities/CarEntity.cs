@@ -1,6 +1,8 @@
-﻿namespace projectcars.Entities
+﻿using projectcars.Interfaces.Interfaces;
+
+namespace projectcars.Entities
 {
-    public class CarEntity
+    public class CarEntity : IHasImages
     {
         public Guid Id { get; set; }
         public double Price { get; set; }
@@ -25,6 +27,7 @@
         //Signaling
         public bool Signaling { get; set; }
         public GenerationEntity? GenerationEntity { get; set; }
-        public int GenerationId { get; set; }
+        public Guid GenerationId { get; set; }
+        public ICollection<ImageEntity>? ImageEntities { get; }
     }
 }

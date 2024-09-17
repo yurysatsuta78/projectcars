@@ -7,7 +7,7 @@ namespace projectcars.Interfaces.Repositories
     {
         Task Create(Brand brand);
         Task<List<BrandEntity>> GetBrands();
-        Task<BrandEntity> GetById(int id);
+        Task<BrandEntity> GetById(Guid id);
         Task Remove(BrandEntity brandEntity);
         Task Update(BrandEntity brandEntity, Brand brand);
     }

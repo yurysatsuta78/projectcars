@@ -1,4 +1,6 @@
-﻿namespace projectcars.Models
+﻿using projectcars.Interfaces.Interfaces;
+
+namespace projectcars.Models
 {
     public class Car
     {
@@ -99,5 +101,6 @@
         public bool Immobilizer { get; set; }
         //Signaling
         public bool Signaling { get; set; }
+        public List<string>? ImagesBase64 { get; set; }
     }
 }

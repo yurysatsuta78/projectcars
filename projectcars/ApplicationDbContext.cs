@@ -13,6 +13,7 @@ namespace projectcars
         public DbSet<BrandEntity> Brands { get; set; }
         public DbSet<ModelEntity> Models { get; set; }
         public DbSet<GenerationEntity> Generations { get; set; }
+        public DbSet<ImageEntity> Images { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,6 +21,7 @@ namespace projectcars
             modelBuilder.ApplyConfiguration(new BrandConfiguration());
             modelBuilder.ApplyConfiguration(new Configuration.ModelConfiguration());
             modelBuilder.ApplyConfiguration(new GenerationConfiguration());
+            modelBuilder.ApplyConfiguration(new ImageConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

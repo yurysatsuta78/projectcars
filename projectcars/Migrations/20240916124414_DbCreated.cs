@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace projectcars.Migrations
 {
     /// <inheritdoc />
-    public partial class ProjectCarsDbCreated : Migration
+    public partial class DbCreated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,8 +15,7 @@ namespace projectcars.Migrations
                 name: "Brands",
                 columns: table => new
                 {
-                    BrandId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     BrandName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -28,10 +27,9 @@ namespace projectcars.Migrations
                 name: "Models",
                 columns: table => new
                 {
-                    ModelId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ModelName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    BrandId = table.Column<int>(type: "int", nullable: false)
+                    BrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,13 +46,12 @@ namespace projectcars.Migrations
                 name: "Generations",
                 columns: table => new
                 {
-                    GenerationId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GenerationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GenerationName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Restyling = table.Column<bool>(type: "bit", nullable: false),
                     StartYear = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
                     EndYear = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: false),
-                    ModelId = table.Column<int>(type: "int", nullable: false)
+                    ModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,12 +78,13 @@ namespace projectcars.Migrations
                     EnginePower = table.Column<int>(type: "int", maxLength: 10, nullable: false),
                     Mileage = table.Column<int>(type: "int", maxLength: 10, nullable: false),
                     Color = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    IsHidden = table.Column<bool>(type: "bit", nullable: false),
                     Abs = table.Column<bool>(type: "bit", nullable: false),
                     Esp = table.Column<bool>(type: "bit", nullable: false),
                     Asr = table.Column<bool>(type: "bit", nullable: false),
-                    Immobilazer = table.Column<bool>(type: "bit", nullable: false),
+                    Immobilizer = table.Column<bool>(type: "bit", nullable: false),
                     Signaling = table.Column<bool>(type: "bit", nullable: false),
-                    GenerationId = table.Column<int>(type: "int", nullable: false)
+                    GenerationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,6 +95,36 @@ namespace projectcars.Migrations
                         principalTable: "Generations",
                         principalColumn: "GenerationId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ImagePath = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CarId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    BrandId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    GenerationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_Brands_BrandId",
+                        column: x => x.BrandId,
+                        principalTable: "Brands",
+                        principalColumn: "BrandId");
+                    table.ForeignKey(
+                        name: "FK_Images_Cars_CarId",
+                        column: x => x.CarId,
+                        principalTable: "Cars",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Images_Generations_GenerationId",
+                        column: x => x.GenerationId,
+                        principalTable: "Generations",
+                        principalColumn: "GenerationId");
                 });
 
             migrationBuilder.CreateIndex(
@@ -122,6 +150,31 @@ namespace projectcars.Migrations
                 column: "ModelId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Images_BrandId",
+                table: "Images",
+                column: "BrandId",
+                unique: true,
+                filter: "[BrandId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_CarId",
+                table: "Images",
+                column: "CarId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_GenerationId",
+                table: "Images",
+                column: "GenerationId",
+                unique: true,
+                filter: "[GenerationId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_ImagePath",
+                table: "Images",
+                column: "ImagePath",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Models_BrandId",
                 table: "Models",
                 column: "BrandId");
@@ -136,6 +189,9 @@ namespace projectcars.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Images");
+
             migrationBuilder.DropTable(
                 name: "Cars");
 

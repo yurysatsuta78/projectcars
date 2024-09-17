@@ -24,11 +24,9 @@ namespace projectcars.Migrations
 
             modelBuilder.Entity("projectcars.Entities.BrandEntity", b =>
                 {
-                    b.Property<int>("BrandId")
+                    b.Property<Guid>("BrandId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BrandId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("BrandName")
                         .IsRequired()
@@ -86,8 +84,8 @@ namespace projectcars.Migrations
                     b.Property<bool>("Esp")
                         .HasColumnType("bit");
 
-                    b.Property<int>("GenerationId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("GenerationId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Immobilizer")
                         .HasColumnType("bit");
@@ -120,11 +118,9 @@ namespace projectcars.Migrations
 
             modelBuilder.Entity("projectcars.Entities.GenerationEntity", b =>
                 {
-                    b.Property<int>("GenerationId")
+                    b.Property<Guid>("GenerationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GenerationId"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("EndYear")
                         .IsRequired()
@@ -136,8 +132,8 @@ namespace projectcars.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("ModelId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ModelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Restyling")
                         .HasColumnType("bit");
@@ -157,16 +153,51 @@ namespace projectcars.Migrations
                     b.ToTable("Generations");
                 });
 
+            modelBuilder.Entity("projectcars.Entities.ImageEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("BrandId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CarId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("GenerationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId")
+                        .IsUnique()
+                        .HasFilter("[BrandId] IS NOT NULL");
+
+                    b.HasIndex("CarId");
+
+                    b.HasIndex("GenerationId")
+                        .IsUnique()
+                        .HasFilter("[GenerationId] IS NOT NULL");
+
+                    b.HasIndex("ImagePath")
+                        .IsUnique();
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("projectcars.Entities.ModelEntity", b =>
                 {
-                    b.Property<int>("ModelId")
+                    b.Property<Guid>("ModelId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ModelId"));
-
-                    b.Property<int>("BrandId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("BrandId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ModelName")
                         .IsRequired()
@@ -205,6 +236,27 @@ namespace projectcars.Migrations
                     b.Navigation("ModelEntity");
                 });
 
+            modelBuilder.Entity("projectcars.Entities.ImageEntity", b =>
+                {
+                    b.HasOne("projectcars.Entities.BrandEntity", "BrandEntity")
+                        .WithOne("ImageEntity")
+                        .HasForeignKey("projectcars.Entities.ImageEntity", "BrandId");
+
+                    b.HasOne("projectcars.Entities.CarEntity", "CarEntity")
+                        .WithMany("ImageEntities")
+                        .HasForeignKey("CarId");
+
+                    b.HasOne("projectcars.Entities.GenerationEntity", "GenerationEntity")
+                        .WithOne("ImageEntity")
+                        .HasForeignKey("projectcars.Entities.ImageEntity", "GenerationId");
+
+                    b.Navigation("BrandEntity");
+
+                    b.Navigation("CarEntity");
+
+                    b.Navigation("GenerationEntity");
+                });
+
             modelBuilder.Entity("projectcars.Entities.ModelEntity", b =>
                 {
                     b.HasOne("projectcars.Entities.BrandEntity", "BrandEntity")
@@ -218,12 +270,21 @@ namespace projectcars.Migrations
 
             modelBuilder.Entity("projectcars.Entities.BrandEntity", b =>
                 {
+                    b.Navigation("ImageEntity");
+
                     b.Navigation("ModelEntities");
+                });
+
+            modelBuilder.Entity("projectcars.Entities.CarEntity", b =>
+                {
+                    b.Navigation("ImageEntities");
                 });
 
             modelBuilder.Entity("projectcars.Entities.GenerationEntity", b =>
                 {
                     b.Navigation("CarEntities");
+
+                    b.Navigation("ImageEntity");
                 });
 
             modelBuilder.Entity("projectcars.Entities.ModelEntity", b =>

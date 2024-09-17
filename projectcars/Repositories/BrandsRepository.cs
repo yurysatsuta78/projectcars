@@ -18,14 +18,14 @@ namespace projectcars.Repositories
         {
             var brandEntity = new BrandEntity
             {
+                BrandId = brand.BrandId,
                 BrandName = brand.BrandName
             };
 
             await _context.Brands.AddAsync(brandEntity);
-            await _context.SaveChangesAsync();
         }
 
-        public async Task<BrandEntity> GetById(int id)
+        public async Task<BrandEntity> GetById(Guid id)
         {
             var brandEntity = await _context.Brands.FirstOrDefaultAsync(m => m.BrandId == id);
 
@@ -69,10 +69,9 @@ namespace projectcars.Repositories
 
         public async Task<List<BrandEntity>> GetBrands()
         {
-            var brandEntities = await _context.Brands
+            return await _context.Brands
+                .Include(b => b.ImageEntity)
                 .ToListAsync();
-
-            return brandEntities;
         }
     }
 }

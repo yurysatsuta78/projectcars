@@ -4,19 +4,20 @@ namespace projectcars.Contracts.Cars;
 
 public record CreateCarRequest
 (
-    [Required]double price,
-    [Required]double engineVolume,
-    [Required]string transmissionType,
-    [Required]string bodyType,
-    [Required]string engineType,
-    [Required]string driveTrain,
-    [Required]int enginePower,
-    [Required]int mileage,
-    [Required]string color,
-    [Required]bool abs,
-    [Required]bool esp,
-    [Required]bool asr,
-    [Required]bool immobilazer,
-    [Required]bool signaling,
-    [Required]int generationId
+    [Required]double Price,
+    [Required]double EngineVolume,
+    [Required]string TransmissionType,
+    [Required]string BodyType,
+    [Required]string EngineType,
+    [Required]string DriveTrain,
+    [Required]int EnginePower,
+    [Required]int Mileage,
+    [Required]string Color,
+    [Required]bool Abs,
+    [Required]bool Esp,
+    [Required]bool Asr,
+    [Required]bool Immobilazer,
+    [Required]bool Signaling,
+    [Required]Guid GenerationId,
+    [Required]List<IFormFile> Images
 );

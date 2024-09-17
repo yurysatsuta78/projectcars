@@ -16,9 +16,9 @@ namespace projectcars.Services
             _mapper = mapper;
         }
 
-        public async Task Create(string modelName, int brandId)
+        public async Task Create(string modelName, Guid brandId)
         {
-            var model = Model.Create(modelName);
+            var model = Model.Create(brandId, modelName);
 
             await _modelsRepository.Create(model, brandId);
         }
@@ -35,7 +35,7 @@ namespace projectcars.Services
             await _modelsRepository.Remove(modelEntity);
         }
 
-        public async Task<List<Model>> GetGenerations()
+        public async Task<List<Model>> GetModels()
         {
             return _mapper.Map<List<Model>>(await _modelsRepository.GetModels());
         }

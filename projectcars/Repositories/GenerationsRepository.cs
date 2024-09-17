@@ -14,10 +14,11 @@ namespace projectcars.Repositories
             _context = context;
         }
 
-        public async Task Create(Generation generation, int modelId)
+        public async Task Create(Generation generation, Guid modelId)
         {
             var generationEntity = new GenerationEntity
             {
+                GenerationId = generation.GenerationId,
                 GenerationName = generation.GenerationName,
                 Restyling = generation.Restyling,
                 StartYear = generation.StartYear,
@@ -26,10 +27,9 @@ namespace projectcars.Repositories
             };
 
             await _context.Generations.AddAsync(generationEntity);
-            await _context.SaveChangesAsync();
         }
 
-        public async Task<GenerationEntity> GetById(int id)
+        public async Task<GenerationEntity> GetById(Guid id)
         {
             var generationEntity = await _context.Generations.FirstOrDefaultAsync(m => m.GenerationId == id);
 
@@ -76,10 +76,10 @@ namespace projectcars.Repositories
 
         public async Task<List<GenerationEntity>> GetGenerations()
         {
-            var generationEntities = await _context.Generations
+            return await _context.Generations
+                .Include(b => b.ImageEntity)
+                .Include(b => b.ModelEntity)
                 .ToListAsync();
-
-            return generationEntities;
         }
     }
 }

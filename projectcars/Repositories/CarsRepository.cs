@@ -14,7 +14,7 @@ namespace projectcars.Repositories
             _context = context;
         }
 
-        public async Task Create(Car car, int generationId)
+        public async Task Create(Car car, Guid generationId)
         {
             var carEntity = new CarEntity
             {
@@ -100,11 +100,10 @@ namespace projectcars.Repositories
 
         public async Task<List<CarEntity>> GetActiveCars()
         {
-            var activeCarEntities = await _context.Cars
-                .Where(p => p.IsHidden == false)
+            return await _context.Cars
+                .Where(b => b.IsHidden == false)
+                .Include(b => b.ImageEntities)
                 .ToListAsync();
-
-            return activeCarEntities;
         }
     }
 }

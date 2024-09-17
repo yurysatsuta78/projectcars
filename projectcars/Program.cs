@@ -1,5 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using projectcars;
+using projectcars.Interfaces.Repositories;
+using projectcars.Interfaces.Services;
+using projectcars.Interfaces.UnitsOfWork;
+using projectcars.Repositories;
+using projectcars.Services;
+using projectcars.UnitsOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +16,22 @@ var services = builder.Services;
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
+
+services.AddScoped<ICarsImageUOW, CarsImageUOW>();
+services.AddScoped<IBrandImageUOW, BrandImageUOW>();
+services.AddScoped<IGenerationImageUOW, GenerationImageUOW>();
+
+services.AddScoped<ICarsRepository, CarsRepository>();
+services.AddScoped<IBrandsRepository, BrandsRepository>();
+services.AddScoped<IModelsRepository, ModelsRepository>();
+services.AddScoped<IGenerationsRepository, GenerationsRepository>();
+services.AddScoped<IImagesRepository, ImagesRepository>();
+
+services.AddScoped<IImagesService, ImagesService>();
+services.AddScoped<CarsService>();
+services.AddScoped<BrandsService>();
+services.AddScoped<ModelsService>();
+services.AddScoped<GenerationsService>();
 
 services.AddDbContext<ApplicationDbContext>(options =>
 {

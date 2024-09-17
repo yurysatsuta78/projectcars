@@ -4,18 +4,18 @@ namespace projectcars.Models
 {
     public class Model
     {
-        private Model(string modelName)
+        private Model(Guid modelId, string modelName)
         {
+            ModelId = modelId;
             ModelName = modelName;
         }
 
-        public static Model Create(string modelName)
+        public static Model Create(Guid modelId, string modelName)
         {
-            return new Model(modelName);
+            return new Model(modelId, modelName);
         }
 
-        public int ModelId { get; set; }
+        public Guid ModelId { get; set; }
         public string ModelName { get; set; } = String.Empty;
-        public Brand? Brand { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace projectcars.Repositories
             _context = context;
         }
 
-        public async Task Create(Model model, int brandId)
+        public async Task Create(Model model, Guid brandId)
         {
             var modelEntity = new ModelEntity
             {
@@ -26,7 +26,7 @@ namespace projectcars.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<ModelEntity> GetById(int id)
+        public async Task<ModelEntity> GetById(Guid id)
         {
             var modelEntity = await _context.Models.FirstOrDefaultAsync(m => m.ModelId == id);
 

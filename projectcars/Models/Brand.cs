@@ -2,17 +2,19 @@
 {
     public class Brand
     {
-        private Brand(string brandName)
+        private Brand(Guid brandId, string brandName)
         {
             BrandName = brandName;
+            BrandId = brandId;
         }
 
-        public static Brand Create(string brandName)
+        public static Brand Create(Guid brandId, string brandName)
         {
-            return new Brand(brandName);
+            return new Brand(brandId, brandName);
         }
 
-        public int BrandId { get; set; }
+        public Guid BrandId { get; set; }
         public string BrandName { get; set; } = String.Empty;
+        public string? ImageBase64 { get; set; }
     }
 }
