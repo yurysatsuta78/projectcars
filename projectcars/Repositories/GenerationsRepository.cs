@@ -31,7 +31,7 @@ namespace projectcars.Repositories
 
         public async Task<GenerationEntity> GetById(Guid id)
         {
-            var generationEntity = await _context.Generations.FirstOrDefaultAsync(m => m.GenerationId == id);
+            var generationEntity = await _context.Generations.Include(m => m.ImageEntity).FirstOrDefaultAsync(m => m.GenerationId == id);
 
             if (generationEntity != null)
             {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using projectcars.DTO.Car;
 using projectcars.Entities;
 using projectcars.Interfaces.Repositories;
 using projectcars.Interfaces.Services;
@@ -23,7 +24,7 @@ namespace projectcars.Services
         }
 
         #region Create method
-        public async Task Create(List<IFormFile> images, double price, double engineVolume, string transmissionType, string bodyType, string engineType, string driveTrain, int enginePower, int mileage, string color, bool abs, bool esp, bool asr, bool immobilazer, bool signaling, Guid generationId)
+        public async Task Create(IFormFile[] images, double price, double engineVolume, string transmissionType, string bodyType, string engineType, string driveTrain, int enginePower, int mileage, string color, bool abs, bool esp, bool asr, bool immobilazer, bool signaling, Guid generationId)
         {
             var uploadedImagePath = String.Empty;
             List<string> imagePaths = new List<string>();
@@ -97,10 +98,47 @@ namespace projectcars.Services
             await _carsImageUOW.Cars.Update(carEntity, car);
         }
 
-        public async Task<List<Car>> GetActiveCars() 
+        public async Task Remove(Guid id) 
+        {
+            var carEntity = await _carsImageUOW.Cars.GetById(id);
+
+            if (carEntity != null && carEntity.ImageEntities != null && carEntity.ImageEntities.Count > 0)
+            {
+                try
+                {
+                    foreach (var image in carEntity.ImageEntities)
+                    {
+                        _imagesService.DeleteImage(image.ImagePath);
+                    }
+
+                    using (var transaction = await _carsImageUOW.BeginTransactionAsync()) 
+                    {
+                        foreach (var image in carEntity.ImageEntities) 
+                        {
+                            await _carsImageUOW.Images.Remove(image);
+                        }
+
+                        await _carsImageUOW.Cars.Remove(carEntity);
+
+                        await _carsImageUOW.CommitAsync();
+                    }
+                }
+                catch 
+                {
+                    await _carsImageUOW.RollbackAsync();
+                    throw;
+                }
+            }
+            else 
+            {
+                throw new Exception();
+            }
+        }
+
+        public async Task<List<CarDTO>> GetActiveCars() 
         {
             var carEntities = await _carsImageUOW.Cars.GetActiveCars();
-            return await _imagesService.ConvertBrandImageCollectionToBase64<Car, CarEntity>(carEntities);
+            return await _imagesService.ConvertBrandImageCollectionToBase64<CarDTO, CarEntity>(carEntities);
         }
     }
 }

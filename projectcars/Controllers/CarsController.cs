@@ -59,5 +59,33 @@ namespace projectcars.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("hide")]
+        public async Task<IActionResult> Hide(HideCarRequest req) 
+        {
+            try
+            {
+                await _carsService.Hide(req.Id);
+                return Ok();
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("remove")]
+        public async Task<IActionResult> Remove(RemoveCarRequest req) 
+        {
+            try
+            {
+                await _carsService.Remove(req.Id);
+                return Ok();
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

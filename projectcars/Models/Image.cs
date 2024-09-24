@@ -10,7 +10,7 @@
 
         public Guid Id { get; set; }
         public IFormFile? ImageFile { get; set; }
-        public string ImagePath { get; set; } = string.Empty;
+        public string ImagePath { get; set; }
 
         public static Image Create(Guid id, string imagePath) 
         {

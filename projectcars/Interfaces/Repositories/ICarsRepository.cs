@@ -9,6 +9,7 @@ namespace projectcars.Interfaces.Repositories
         Task<List<CarEntity>> GetActiveCars();
         Task<CarEntity> GetById(Guid id);
         Task Hide(CarEntity carEntity);
+        Task Remove(CarEntity carEntity);
         Task Update(CarEntity carEntity, Car car);
     }
 }

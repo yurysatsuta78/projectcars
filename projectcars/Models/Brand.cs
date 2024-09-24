@@ -14,7 +14,7 @@
         }
 
         public Guid BrandId { get; set; }
-        public string BrandName { get; set; } = String.Empty;
+        public string BrandName { get; set; }
         public string? ImageBase64 { get; set; }
     }
 }

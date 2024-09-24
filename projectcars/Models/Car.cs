@@ -1,6 +1,4 @@
-﻿using projectcars.Interfaces.Interfaces;
-
-namespace projectcars.Models
+﻿namespace projectcars.Models
 {
     public class Car
     {
@@ -82,13 +80,13 @@ namespace projectcars.Models
         public Guid Id { get; set; }
         public double Price { get; set; }
         public double EngineVolume { get; set; }
-        public string TransmissionType { get; set; } = String.Empty;
-        public string BodyType { get; set; } = String.Empty;
-        public string EngineType { get; set; } = String.Empty;
-        public string DriveTrain { get; set; } = String.Empty;
+        public string TransmissionType { get; set; }
+        public string BodyType { get; set; }
+        public string EngineType { get; set; }
+        public string DriveTrain { get; set; }
         public int EnginePower { get; set; }
         public int Mileage { get; set; }
-        public string Color { get; set; } = String.Empty;
+        public string Color { get; set; }
         public Generation? Generation { get; set; }
 
         //ABS

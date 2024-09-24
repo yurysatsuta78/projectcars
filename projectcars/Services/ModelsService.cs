@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using projectcars.DTO.Model;
 using projectcars.Interfaces.Repositories;
 using projectcars.Models;
 using projectcars.Repositories;
@@ -35,9 +36,9 @@ namespace projectcars.Services
             await _modelsRepository.Remove(modelEntity);
         }
 
-        public async Task<List<Model>> GetModels()
+        public async Task<List<ModelDTO>> GetModels()
         {
-            return _mapper.Map<List<Model>>(await _modelsRepository.GetModels());
+            return _mapper.Map<List<ModelDTO>>(await _modelsRepository.GetModels());
         }
     }
 }

@@ -27,7 +27,7 @@ namespace projectcars.Repositories
 
         public async Task<BrandEntity> GetById(Guid id)
         {
-            var brandEntity = await _context.Brands.FirstOrDefaultAsync(m => m.BrandId == id);
+            var brandEntity = await _context.Brands.Include(m => m.ImageEntity).FirstOrDefaultAsync(m => m.BrandId == id);
 
             if (brandEntity != null)
             {

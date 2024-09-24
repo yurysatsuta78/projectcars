@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using projectcars.DTO.Brand;
+using projectcars.DTO.Car;
+using projectcars.DTO.Generation;
+using projectcars.DTO.Model;
 using projectcars.Entities;
 using projectcars.Models;
-using System.Data;
 
 namespace projectcars
 {
@@ -9,11 +12,23 @@ namespace projectcars
     {
         public DBMappings() 
         {
-            CreateMap<CarEntity, Car>();
-            CreateMap<BrandEntity, Brand>();
-            CreateMap<ModelEntity, Model>();
-            CreateMap<GenerationEntity, Generation>()
-                .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.ModelEntity));
+            //CreateMap<CarEntity, Car>()
+            //    .ForMember(dest => dest.Generation, opt => opt.MapFrom(src => src.GenerationEntity));
+            //CreateMap<BrandEntity, Brand>();
+            //CreateMap<ModelEntity, Model>();
+            //CreateMap<GenerationEntity, Generation>()
+            //    .ForMember(dest => dest.Model, opt => opt.MapFrom(src => src.ModelEntity));
+
+            CreateMap<CarEntity, CarDTO>()
+                .ForMember(dest => dest.Generation, opt => opt.MapFrom(src => src.GenerationEntity))
+                .ForPath(dest => dest.Generation.Model, opt => opt.MapFrom(src => src.GenerationEntity.ModelEntity))
+                .ForPath(dest => dest.Generation.Model.Brand, opt => opt.MapFrom(src => src.GenerationEntity.ModelEntity.BrandEntity));
+            CreateMap<BrandEntity, CarBrandDTO>();
+            CreateMap<ModelEntity, CarModelDTO>();
+            CreateMap<GenerationEntity, CarGenerationDTO>();
+            CreateMap<BrandEntity, BrandDTO>();
+            CreateMap<ModelEntity, ModelDTO>();
+            CreateMap<GenerationEntity, GenerationDTO>();
         }
     }
 }

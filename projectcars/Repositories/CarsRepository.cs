@@ -43,7 +43,7 @@ namespace projectcars.Repositories
 
         public async Task<CarEntity> GetById(Guid id)
         {
-            var carEntity = await _context.Cars.FirstOrDefaultAsync(m => m.Id == id);
+            var carEntity = await _context.Cars.Include(m => m.ImageEntities).FirstOrDefaultAsync(m => m.Id == id);
 
             if (carEntity != null)
             {
@@ -98,11 +98,27 @@ namespace projectcars.Repositories
             }
         }
 
+        public async Task Remove(CarEntity carEntity) 
+        {
+            if (carEntity != null)
+            {
+                _context.Cars.Remove(carEntity);
+                await _context.SaveChangesAsync();
+            }
+            else 
+            {
+                throw new Exception();
+            }
+        }
+
         public async Task<List<CarEntity>> GetActiveCars()
         {
             return await _context.Cars
                 .Where(b => b.IsHidden == false)
                 .Include(b => b.ImageEntities)
+                .Include(b => b.GenerationEntity)
+                .ThenInclude(b => b.ModelEntity)
+                .ThenInclude(b => b.BrandEntity)
                 .ToListAsync();
         }
     }

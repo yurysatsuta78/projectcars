@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using projectcars.DTO.Brand;
 using projectcars.Entities;
 using projectcars.Interfaces.Repositories;
 using projectcars.Interfaces.Services;
@@ -23,12 +24,10 @@ namespace projectcars.Services
 
         public async Task Create(string brandName, IFormFile image)
         {
-            var uploadedImagePath = String.Empty;
-
             var brand = Brand.Create(Guid.NewGuid(), brandName);
 
             var newImage = await _imagesService.UploadImage(image, null, brand.BrandId, null);
-            uploadedImagePath = newImage.ImagePath;
+            var uploadedImagePath = newImage.ImagePath;
             try 
             {
                 using (var transaction = await _brandImageUOW.BeginTransactionAsync()) 
@@ -59,16 +58,42 @@ namespace projectcars.Services
             await _brandImageUOW.Brands.Update(brandEntity, brand);
         }
 
-        public async Task Remove(Brand brand)
+        public async Task Remove(Guid brandId)
         {
-            var brandEntity = await _brandImageUOW.Brands.GetById(brand.BrandId);
-            await _brandImageUOW.Brands.Remove(brandEntity);
+            var brandEntity = await _brandImageUOW.Brands.GetById(brandId);
+
+            if (brandEntity != null && brandEntity.ImageEntity != null)
+            {
+                var imageEntity = await _brandImageUOW.Images.GetById(brandEntity.ImageEntity.Id);
+
+                try 
+                {
+                    _imagesService.DeleteImage(brandEntity.ImageEntity.ImagePath);
+
+                    using (var transaction = await _brandImageUOW.BeginTransactionAsync())
+                    {
+                        await _brandImageUOW.Images.Remove(imageEntity);
+                        await _brandImageUOW.Brands.Remove(brandEntity);
+
+                        await _brandImageUOW.CommitAsync();
+                    }
+                }
+                catch 
+                {
+                    await _brandImageUOW.RollbackAsync();
+                    throw;
+                }
+            }
+            else 
+            {
+                throw new Exception();
+            }
         }
 
-        public async Task<List<Brand>> GetBrands()
+        public async Task<List<BrandDTO>> GetBrands()
         {
             var brandEntities = await _brandImageUOW.Brands.GetBrands();
-            return await _imagesService.ConvertBrandImagesToBase64<Brand, BrandEntity>(brandEntities);
+            return await _imagesService.ConvertBrandImagesToBase64<BrandDTO, BrandEntity>(brandEntities);
         }
     }
 }

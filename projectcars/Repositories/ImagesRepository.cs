@@ -49,6 +49,20 @@ namespace projectcars.Repositories
             }
         }
 
+        public async Task<ImageEntity> GetById(Guid id) 
+        {
+            var imageEntity = await _context.Images.FirstOrDefaultAsync(m => m.Id == id);
+
+            if (imageEntity != null)
+            {
+                return imageEntity;
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+
         public async Task<List<ImageEntity>> GetBrandImages(Guid brandId)
         {
             var imageEntities = await _context.Images
@@ -92,6 +106,19 @@ namespace projectcars.Repositories
                 return imageEntities;
             }
             else
+            {
+                throw new Exception();
+            }
+        }
+
+        public async Task Remove(ImageEntity imageEntity) 
+        {
+            if(imageEntity != null) 
+            {
+                _context.Images.Remove(imageEntity);
+                await _context.SaveChangesAsync();
+            }
+            else 
             {
                 throw new Exception();
             }

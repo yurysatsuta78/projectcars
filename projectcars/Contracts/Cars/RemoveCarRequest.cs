@@ -2,7 +2,7 @@
 
 namespace projectcars.Contracts.Cars;
 
-public record HideCarRequest
+public record RemoveCarRequest
 (
-    [Required]Guid Id
+    [Required] Guid Id
 );

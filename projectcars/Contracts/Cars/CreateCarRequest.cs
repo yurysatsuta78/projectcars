@@ -19,5 +19,5 @@ public record CreateCarRequest
     [Required]bool Immobilazer,
     [Required]bool Signaling,
     [Required]Guid GenerationId,
-    [Required]List<IFormFile> Images
+    [Required][MaxLength(10)]IFormFile[] Images
 );

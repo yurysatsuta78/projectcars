@@ -16,6 +16,7 @@ namespace projectcars.Models
         }
 
         public Guid ModelId { get; set; }
-        public string ModelName { get; set; } = String.Empty;
+        public string ModelName { get; set; }
+        public Brand? Brand { get; set; }
     }
 }

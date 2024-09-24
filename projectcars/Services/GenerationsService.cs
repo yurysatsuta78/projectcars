@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using projectcars.DTO.Generation;
 using projectcars.Entities;
 using projectcars.Interfaces.Repositories;
 using projectcars.Interfaces.Services;
@@ -62,16 +63,42 @@ namespace projectcars.Services
             await _generationImageUOW.Generations.Update(generationEntity, generation);
         }
 
-        public async Task Remove(Generation generation) 
+        public async Task Remove(Guid generationId) 
         {
-            var generationEntity = await _generationImageUOW.Generations.GetById(generation.GenerationId);
-            await _generationImageUOW.Generations.Remove(generationEntity);
+            var generationEntity = await _generationImageUOW.Generations.GetById(generationId);
+
+            if(generationEntity != null && generationEntity.ImageEntity != null) 
+            {
+                var imageEntity = await _generationImageUOW.Images.GetById(generationEntity.ImageEntity.Id);
+
+                try
+                {
+                    _imagesService.DeleteImage(generationEntity.ImageEntity.ImagePath);
+
+                    using (var transaction = await _generationImageUOW.BeginTransactionAsync())
+                    {
+                        await _generationImageUOW.Images.Remove(imageEntity);
+                        await _generationImageUOW.Generations.Remove(generationEntity);
+
+                        await _generationImageUOW.CommitAsync();
+                    }
+                }
+                catch
+                {
+                    await _generationImageUOW.RollbackAsync();
+                    throw;
+                }
+            }
+            else 
+            {
+                throw new Exception();
+            }
         }
 
-        public async Task<List<Generation>> GetGenerations() 
+        public async Task<List<GenerationDTO>> GetGenerations() 
         {
             var generationEntities = await _generationImageUOW.Generations.GetGenerations();
-            return await _imagesService.ConvertBrandImagesToBase64<Generation, GenerationEntity>(generationEntities);
+            return await _imagesService.ConvertBrandImagesToBase64<GenerationDTO, GenerationEntity>(generationEntities);
         }
     }
 }

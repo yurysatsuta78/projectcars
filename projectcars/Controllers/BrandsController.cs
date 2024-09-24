@@ -43,5 +43,20 @@ namespace projectcars.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("remove")]
+        public async Task<IActionResult> Remove([FromForm] RemoveBrandRequest req)
+        {
+            try
+            {
+                await _brandsService.Remove(req.BrandId);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
