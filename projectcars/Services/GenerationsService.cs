@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using projectcars.DTO.Brand;
 using projectcars.DTO.Generation;
 using projectcars.Entities;
 using projectcars.Interfaces.Repositories;
@@ -13,13 +14,13 @@ namespace projectcars.Services
     public class GenerationsService
     {
         private readonly IGenerationImageUOW _generationImageUOW;
-        private readonly IImagesService _imagesService;
+        private readonly IGoogleDriveService _googleDriveService;
         private readonly IMapper _mapper;
 
-        public GenerationsService(IGenerationImageUOW generationImageUOW, IImagesService imagesService, IMapper mapper)
+        public GenerationsService(IGenerationImageUOW generationImageUOW, IGoogleDriveService googleDriveService, IMapper mapper)
         {
             _generationImageUOW = generationImageUOW;
-            _imagesService = imagesService;
+            _googleDriveService = googleDriveService;
             _mapper = mapper;
         }
 
@@ -30,15 +31,15 @@ namespace projectcars.Services
 
             var generation = Generation.Create(Guid.NewGuid(), generationName, restyling, startYear, endYear);
 
-            var newImage = await _imagesService.UploadImage(image, null, null, generation.GenerationId);
-            uploadedImagePath = newImage.ImagePath;
+            var newImage = await _googleDriveService.UploadImage(image, null, null, generation.GenerationId);
+            uploadedImagePath = newImage.ImageUrl;
             try
             {
                 using (var transaction = await _generationImageUOW.BeginTransactionAsync()) 
                 {
                     await _generationImageUOW.Generations.Create(generation, modelId);
 
-                    await _generationImageUOW.Images.Create(newImage, null, null, generation.GenerationId);
+                    await _generationImageUOW.Images.Create(newImage, null, generation.GenerationId);
 
                     await _generationImageUOW.SaveChangesAsync();
                     await _generationImageUOW.CommitAsync();
@@ -47,11 +48,6 @@ namespace projectcars.Services
             catch 
             {
                 await _generationImageUOW.RollbackAsync();
-
-                if (!string.IsNullOrEmpty(uploadedImagePath))
-                {
-                    _imagesService.DeleteImage(uploadedImagePath);
-                }
                 throw;
             }
         }
@@ -73,8 +69,6 @@ namespace projectcars.Services
 
                 try
                 {
-                    _imagesService.DeleteImage(generationEntity.ImageEntity.ImagePath);
-
                     using (var transaction = await _generationImageUOW.BeginTransactionAsync())
                     {
                         await _generationImageUOW.Images.Remove(imageEntity);
@@ -97,8 +91,7 @@ namespace projectcars.Services
 
         public async Task<List<GenerationDTO>> GetGenerations() 
         {
-            var generationEntities = await _generationImageUOW.Generations.GetGenerations();
-            return await _imagesService.ConvertBrandImagesToBase64<GenerationDTO, GenerationEntity>(generationEntities);
+            return _mapper.Map<List<GenerationDTO>>(await _generationImageUOW.Generations.GetGenerations());
         }
     }
 }

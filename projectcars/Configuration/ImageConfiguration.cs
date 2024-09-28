@@ -22,9 +22,9 @@ namespace projectcars.Configuration
                 .WithOne(a => a.ImageEntity)
                 .HasForeignKey<ImageEntity>(a => a.GenerationId);
 
-            builder.Property(p => p.ImagePath)
+            builder.Property(p => p.ImageUrl)
                 .IsRequired();
-            builder.HasIndex(p => p.ImagePath)
+            builder.HasIndex(p => p.ImageUrl)
                 .IsUnique();
         }
     }

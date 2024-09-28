@@ -28,6 +28,7 @@ services.AddScoped<IGenerationsRepository, GenerationsRepository>();
 services.AddScoped<IImagesRepository, ImagesRepository>();
 
 services.AddScoped<IImagesService, ImagesService>();
+services.AddScoped<IGoogleDriveService, GoogleDriveService>();
 services.AddScoped<CarsService>();
 services.AddScoped<BrandsService>();
 services.AddScoped<ModelsService>();

@@ -121,5 +121,72 @@ namespace projectcars.Repositories
                 .ThenInclude(b => b.BrandEntity)
                 .ToListAsync();
         }
+
+        public async Task<List<CarEntity>> GetFiltredCars(CarFilter filter) 
+        {
+            var filtredCars = _context.Cars.Where(b => b.Price >= filter.MinPrice && 
+            b.EngineVolume >= filter.MinEngineVolume && 
+            b.EnginePower >= filter.MinEnginePower && 
+            b.Mileage >= filter.MinMileage);
+
+            if (filter.MaxPrice != null) 
+            {
+                filtredCars = filtredCars.Where(b => b.Price <= filter.MaxPrice);
+            }
+            if (filter.MaxEngineVolume != null) 
+            {
+                filtredCars = filtredCars.Where(b => b.EngineVolume <= filter.MaxEngineVolume);
+            }
+            if (filter.TransmissionType != null) 
+            {
+                filtredCars = filtredCars.Where(b => b.TransmissionType == filter.TransmissionType);
+            }
+            if (filter.BodyType != null) 
+            {
+                filtredCars = filtredCars.Where(b => b.BodyType == filter.BodyType);
+            }
+            if (filter.EngineType != null) 
+            {
+                filtredCars = filtredCars.Where(b => b.EngineType == filter.EngineType);
+            }
+            if (filter.DriveTrain != null) 
+            {
+                filtredCars = filtredCars.Where(b => b.DriveTrain == filter.DriveTrain);
+            }
+            if (filter.MaxEnginePower != null)
+            {
+                filtredCars = filtredCars.Where(b => b.EnginePower <= filter.MaxEnginePower);
+            }
+            if (filter.MaxMileage != null)
+            {
+                filtredCars = filtredCars.Where(b => b.Mileage <= filter.MaxMileage);
+            }
+            if (filter.Color != null)
+            {
+                filtredCars = filtredCars.Where(b => b.Color == filter.Color);
+            }
+            if (filter.Abs != null)
+            {
+                filtredCars = filtredCars.Where(b => b.Abs == filter.Abs);
+            }
+            if (filter.Esp != null)
+            {
+                filtredCars = filtredCars.Where(b => b.Esp == filter.Esp);
+            }
+            if (filter.Asr != null)
+            {
+                filtredCars = filtredCars.Where(b => b.Asr == filter.Asr);
+            }
+            if (filter.Immobilizer != null)
+            {
+                filtredCars = filtredCars.Where(b => b.Immobilizer == filter.Immobilizer);
+            }
+            if (filter.Signaling != null)
+            {
+                filtredCars = filtredCars.Where(b => b.Signaling == filter.Signaling);
+            }
+
+            return await filtredCars.ToListAsync();
+        }
     }
 }

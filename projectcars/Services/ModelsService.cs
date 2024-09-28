@@ -30,9 +30,9 @@ namespace projectcars.Services
             await _modelsRepository.Update(modelEntity, model);
         }
 
-        public async Task Remove(Model model)
+        public async Task Remove(Guid id)
         {
-            var modelEntity = await _modelsRepository.GetById(model.ModelId);
+            var modelEntity = await _modelsRepository.GetById(id);
             await _modelsRepository.Remove(modelEntity);
         }
 

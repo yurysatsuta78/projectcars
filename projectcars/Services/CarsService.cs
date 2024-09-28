@@ -13,13 +13,13 @@ namespace projectcars.Services
     public class CarsService
     {
         private readonly ICarsImageUOW _carsImageUOW;
-        private readonly IImagesService _imagesService;
+        private readonly IGoogleDriveService _googleDriveService;
         private readonly IMapper _mapper;
 
-        public CarsService(ICarsImageUOW carsImageUOW, IImagesService imagesService, IMapper mapper)
+        public CarsService(ICarsImageUOW carsImageUOW, IGoogleDriveService googleDriveService, IMapper mapper)
         {
             _carsImageUOW = carsImageUOW;
-            _imagesService = imagesService;
+            _googleDriveService = googleDriveService;
             _mapper = mapper;
         }
 
@@ -27,7 +27,6 @@ namespace projectcars.Services
         public async Task Create(IFormFile[] images, double price, double engineVolume, string transmissionType, string bodyType, string engineType, string driveTrain, int enginePower, int mileage, string color, bool abs, bool esp, bool asr, bool immobilazer, bool signaling, Guid generationId)
         {
             var uploadedImagePath = String.Empty;
-            List<string> imagePaths = new List<string>();
             List<Models.Image> carImages = new List<Models.Image>();
 
             var car = Car.Create(Guid.NewGuid(), price, engineVolume, transmissionType, bodyType, engineType, driveTrain, enginePower, mileage, color, abs, esp, asr, immobilazer, signaling);
@@ -36,21 +35,13 @@ namespace projectcars.Services
             {
                 foreach (var image in images)
                 {
-                    var newImage = await _imagesService.UploadImage(image, car.Id, null, null);
+                    var newImage = await _googleDriveService.UploadImage(image, car.Id, null, null);
                     carImages.Add(newImage);
-                    imagePaths.Add(newImage.ImagePath);
                 }
             }
             catch 
             {
-                if (imagePaths.Count > 0)
-                {
-                    foreach (var imagePath in imagePaths)
-                    {
-                        _imagesService.DeleteImage(imagePath);
-                    }
-                    throw;
-                }
+                throw;
             }
             finally 
             {
@@ -60,10 +51,7 @@ namespace projectcars.Services
                     {
                         await _carsImageUOW.Cars.Create(car, generationId);
 
-                        foreach (var image in carImages)
-                        {
-                            await _carsImageUOW.Images.Create(image, car.Id, null, null);
-                        }
+                        await _carsImageUOW.Images.CreateList(carImages, car.Id);
 
                         await _carsImageUOW.SaveChangesAsync();
                         await _carsImageUOW.CommitAsync();
@@ -72,14 +60,6 @@ namespace projectcars.Services
                 catch
                 {
                     await _carsImageUOW.RollbackAsync();
-
-                    if (imagePaths.Count > 0)
-                    {
-                        foreach (var imagePath in imagePaths)
-                        {
-                            _imagesService.DeleteImage(imagePath);
-                        }
-                    }
                     throw;
                 }
             }
@@ -106,11 +86,6 @@ namespace projectcars.Services
             {
                 try
                 {
-                    foreach (var image in carEntity.ImageEntities)
-                    {
-                        _imagesService.DeleteImage(image.ImagePath);
-                    }
-
                     using (var transaction = await _carsImageUOW.BeginTransactionAsync()) 
                     {
                         foreach (var image in carEntity.ImageEntities) 
@@ -137,8 +112,12 @@ namespace projectcars.Services
 
         public async Task<List<CarDTO>> GetActiveCars() 
         {
-            var carEntities = await _carsImageUOW.Cars.GetActiveCars();
-            return await _imagesService.ConvertBrandImageCollectionToBase64<CarDTO, CarEntity>(carEntities);
+            return _mapper.Map<List<CarDTO>>(await _carsImageUOW.Cars.GetActiveCars());
+        }
+
+        public async Task<List<CarDTO>> GetFiltredCars(CarFilter filter) 
+        {
+            return _mapper.Map<List<CarDTO>>(await _carsImageUOW.Cars.GetFiltredCars(filter));
         }
     }
 }

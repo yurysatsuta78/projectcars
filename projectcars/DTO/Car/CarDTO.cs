@@ -1,4 +1,6 @@
-﻿namespace projectcars.DTO.Car
+﻿using projectcars.DTO.Image;
+
+namespace projectcars.DTO.Car
 {
     public class CarDTO
     {
@@ -18,6 +20,6 @@
         public bool Asr { get; set; }
         public bool Immobilizer { get; set; }
         public bool Signaling { get; set; }
-        public List<string>? ImagesBase64 { get; set; }
+        public List<ImageDTO>? Images { get; set; }
     }
 }

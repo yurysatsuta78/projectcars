@@ -14,25 +14,14 @@ namespace projectcars.Repositories
             _context = context;
         }
 
-        public async Task Create(Image image, Guid? carId, Guid? brandId, Guid? generationId)
+        public async Task Create(Image image, Guid? brandId, Guid? generationId)
         {
-            if (carId != null)
-            {
-                var imageEntity = new ImageEntity
-                {
-                    Id = image.Id,
-                    ImagePath = image.ImagePath,
-                    CarId = carId
-                };
-
-                await _context.Images.AddAsync(imageEntity);
-            }
             if (brandId != null)
             {
                 var imageEntity = new ImageEntity
                 {
                     Id = image.Id,
-                    ImagePath = image.ImagePath,
+                    ImageUrl = image.ImageUrl,
                     BrandId = brandId
                 };
                 await _context.Images.AddAsync(imageEntity);
@@ -42,8 +31,22 @@ namespace projectcars.Repositories
                 var imageEntity = new ImageEntity
                 {
                     Id = image.Id,
-                    ImagePath = image.ImagePath,
+                    ImageUrl = image.ImageUrl,
                     GenerationId = generationId
+                };
+                await _context.Images.AddAsync(imageEntity);
+            }
+        }
+
+        public async Task CreateList(List<Image> images, Guid carId) 
+        {
+            foreach (var image in images) 
+            {
+                var imageEntity = new ImageEntity
+                {
+                    Id = image.Id,
+                    ImageUrl = image.ImageUrl,
+                    CarId = carId
                 };
                 await _context.Images.AddAsync(imageEntity);
             }
@@ -56,54 +59,6 @@ namespace projectcars.Repositories
             if (imageEntity != null)
             {
                 return imageEntity;
-            }
-            else
-            {
-                throw new Exception();
-            }
-        }
-
-        public async Task<List<ImageEntity>> GetBrandImages(Guid brandId)
-        {
-            var imageEntities = await _context.Images
-               .Where(m => m.BrandId == brandId)
-               .ToListAsync();
-
-            if (imageEntities != null) 
-            {
-                return imageEntities;
-            }
-            else 
-            {
-                throw new Exception();
-            }
-        }
-
-        public async Task<List<ImageEntity>> GetGenerationImages(Guid generationId) 
-        {
-            var imageEntities = await _context.Images
-                .Where(m => m.GenerationId == generationId)
-                .ToListAsync();
-
-            if (imageEntities != null)
-            {
-                return imageEntities;
-            }
-            else
-            {
-                throw new Exception();
-            }
-        }
-
-        public async Task<List<ImageEntity>> GetCarImages(Guid carId) 
-        {
-            var imageEntities = await _context.Images
-                .Where(m => m.CarId == carId)
-                .ToListAsync();
-
-            if (imageEntities != null)
-            {
-                return imageEntities;
             }
             else
             {

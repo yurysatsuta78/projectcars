@@ -31,19 +31,6 @@ namespace projectcars.Controllers
             }
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAll()
-        {
-            try
-            {
-                return Ok(await _generationsService.GetGenerations());
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
         [HttpPost("remove")]
         public async Task<IActionResult> Remove([FromForm] RemoveGenerationRequest req)
         {
@@ -52,6 +39,19 @@ namespace projectcars.Controllers
                 await _generationsService.Remove(req.GenerationId);
 
                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                return Ok(await _generationsService.GetGenerations());
             }
             catch (Exception ex)
             {

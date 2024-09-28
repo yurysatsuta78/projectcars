@@ -75,11 +75,11 @@ namespace projectcars.Services
             {
                 var model = _mapper.Map<TModel>(entity);
 
-                if (!string.IsNullOrEmpty(entity.ImageEntity?.ImagePath))
+                if (!string.IsNullOrEmpty(entity.ImageEntity?.ImageUrl))
                 {
                     try
                     {
-                        var imageBytes = await File.ReadAllBytesAsync(entity.ImageEntity.ImagePath);
+                        var imageBytes = await File.ReadAllBytesAsync(entity.ImageEntity.ImageUrl);
                         var imageBase64 = Convert.ToBase64String(imageBytes);
 
                         typeof(TModel).GetProperty("ImageBase64")?.SetValue(model, imageBase64);
@@ -115,7 +115,7 @@ namespace projectcars.Services
                     {
                         try
                         {
-                            var imageBytes = await File.ReadAllBytesAsync(image.ImagePath);
+                            var imageBytes = await File.ReadAllBytesAsync(image.ImageUrl);
                             var imageBase64 = Convert.ToBase64String(imageBytes);
 
                             imageBase64List.Add(imageBase64);

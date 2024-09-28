@@ -12,13 +12,13 @@ namespace projectcars.Services
     public class BrandsService
     {
         private readonly IBrandImageUOW _brandImageUOW;
-        private readonly IImagesService _imagesService;
+        private readonly IGoogleDriveService _googleDriveService;
         private readonly IMapper _mapper;
 
-        public BrandsService(IBrandImageUOW brandImageUOW, IImagesService imagesService, IMapper mapper)
+        public BrandsService(IBrandImageUOW brandImageUOW, IGoogleDriveService googleDriveService, IMapper mapper)
         {
             _brandImageUOW = brandImageUOW;
-            _imagesService = imagesService;
+            _googleDriveService = googleDriveService;
             _mapper = mapper;
         }
 
@@ -26,15 +26,15 @@ namespace projectcars.Services
         {
             var brand = Brand.Create(Guid.NewGuid(), brandName);
 
-            var newImage = await _imagesService.UploadImage(image, null, brand.BrandId, null);
-            var uploadedImagePath = newImage.ImagePath;
+            var newImage = await _googleDriveService.UploadImage(image, null, brand.BrandId, null);
+            var uploadedImagePath = newImage.ImageUrl;
             try 
             {
                 using (var transaction = await _brandImageUOW.BeginTransactionAsync()) 
                 {
                     await _brandImageUOW.Brands.Create(brand);
 
-                    await _brandImageUOW.Images.Create(newImage, null, brand.BrandId, null);
+                    await _brandImageUOW.Images.Create(newImage, brand.BrandId, null);
 
                     await _brandImageUOW.SaveChangesAsync();
                     await _brandImageUOW.CommitAsync();
@@ -43,11 +43,6 @@ namespace projectcars.Services
             catch
             {
                 await _brandImageUOW.RollbackAsync();
-
-                if (!string.IsNullOrEmpty(uploadedImagePath))
-                {
-                    _imagesService.DeleteImage(uploadedImagePath);
-                }
                 throw;
             }
         }
@@ -68,8 +63,6 @@ namespace projectcars.Services
 
                 try 
                 {
-                    _imagesService.DeleteImage(brandEntity.ImageEntity.ImagePath);
-
                     using (var transaction = await _brandImageUOW.BeginTransactionAsync())
                     {
                         await _brandImageUOW.Images.Remove(imageEntity);
@@ -92,8 +85,7 @@ namespace projectcars.Services
 
         public async Task<List<BrandDTO>> GetBrands()
         {
-            var brandEntities = await _brandImageUOW.Brands.GetBrands();
-            return await _imagesService.ConvertBrandImagesToBase64<BrandDTO, BrandEntity>(brandEntities);
+            return _mapper.Map<List<BrandDTO>>(await _brandImageUOW.Brands.GetBrands());
         }
     }
 }

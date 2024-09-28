@@ -2,19 +2,19 @@
 {
     public class Image
     {
-        private Image(Guid id, string imagePath) 
+        private Image(Guid id, string imageUrl) 
         {
             Id = id;
-            ImagePath = imagePath;
+            ImageUrl = imageUrl;
         }
 
         public Guid Id { get; set; }
         public IFormFile? ImageFile { get; set; }
-        public string ImagePath { get; set; }
+        public string ImageUrl { get; set; }
 
-        public static Image Create(Guid id, string imagePath) 
+        public static Image Create(Guid id, string imageUrl) 
         {
-            return new Image(id, imagePath);
+            return new Image(id, imageUrl);
         }
     }
 }

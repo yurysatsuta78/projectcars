@@ -1,4 +1,6 @@
-﻿namespace projectcars.DTO.Generation
+﻿using projectcars.DTO.Image;
+
+namespace projectcars.DTO.Generation
 {
     public class GenerationDTO
     {
@@ -7,6 +9,6 @@
         public bool Restyling { get; set; }
         public string StartYear { get; set; } = String.Empty;
         public string EndYear { get; set; } = String.Empty;
-        public string? ImageBase64 { get; set; }
+        public ImageDTO? Image { get; set; }
     }
 }
