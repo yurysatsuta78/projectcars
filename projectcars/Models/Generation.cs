@@ -22,6 +22,5 @@
         public string StartYear { get; set; }
         public string EndYear { get; set; }
         public Model? Model { get; set; }
-        public string? ImageBase64 { get; set; }
     }
 }

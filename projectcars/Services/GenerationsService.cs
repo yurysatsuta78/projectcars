@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
-using projectcars.DTO.Brand;
 using projectcars.DTO.Generation;
-using projectcars.Entities;
-using projectcars.Interfaces.Repositories;
 using projectcars.Interfaces.Services;
 using projectcars.Interfaces.UnitsOfWork;
 using projectcars.Models;
-using projectcars.Repositories;
-using projectcars.UnitsOfWork;
 
 namespace projectcars.Services
 {

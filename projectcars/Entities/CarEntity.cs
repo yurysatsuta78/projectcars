@@ -1,8 +1,6 @@
-﻿using projectcars.Interfaces.Interfaces;
-
-namespace projectcars.Entities
+﻿namespace projectcars.Entities
 {
-    public class CarEntity : IHasImages
+    public class CarEntity
     {
         public Guid Id { get; set; }
         public double Price { get; set; }

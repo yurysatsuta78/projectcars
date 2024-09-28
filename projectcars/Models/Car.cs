@@ -99,6 +99,5 @@
         public bool Immobilizer { get; set; }
         //Signaling
         public bool Signaling { get; set; }
-        public List<string>? ImagesBase64 { get; set; }
     }
 }

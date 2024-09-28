@@ -9,7 +9,6 @@
         }
 
         public Guid Id { get; set; }
-        public IFormFile? ImageFile { get; set; }
         public string ImageUrl { get; set; }
 
         public static Image Create(Guid id, string imageUrl) 

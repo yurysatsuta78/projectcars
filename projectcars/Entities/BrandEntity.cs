@@ -1,8 +1,6 @@
-﻿using projectcars.Interfaces.Interfaces;
-
-namespace projectcars.Entities
+﻿namespace projectcars.Entities
 {
-    public class BrandEntity : IHasImage
+    public class BrandEntity
     {
         public Guid BrandId { get; set; }
         public string BrandName { get; set; } = String.Empty;

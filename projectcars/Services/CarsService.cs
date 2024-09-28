@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
 using projectcars.DTO.Car;
-using projectcars.Entities;
-using projectcars.Interfaces.Repositories;
 using projectcars.Interfaces.Services;
 using projectcars.Interfaces.UnitsOfWork;
 using projectcars.Models;
-using projectcars.UnitsOfWork;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace projectcars.Services
 {

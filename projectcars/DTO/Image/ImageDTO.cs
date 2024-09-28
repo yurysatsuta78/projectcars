@@ -2,6 +2,6 @@
 {
     public class ImageDTO
     {
-        public string ImageUrl { get; set; } = String.Empty;
+        public string? ImageUrl { get; set; }
     }
 }

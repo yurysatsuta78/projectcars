@@ -1,8 +1,6 @@
-﻿using projectcars.Interfaces.Interfaces;
-
-namespace projectcars.Entities
+﻿namespace projectcars.Entities
 {
-    public class GenerationEntity : IHasImage
+    public class GenerationEntity
     {
         public Guid GenerationId { get; set; }
         public string GenerationName { get; set; } = String.Empty;

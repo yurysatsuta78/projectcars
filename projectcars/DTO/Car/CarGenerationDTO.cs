@@ -2,7 +2,7 @@
 {
     public class CarGenerationDTO
     {
-        public string GenerationName { get; set; } = string.Empty;
+        public string? GenerationName { get; set; }
         public CarModelDTO? Model { get; set; }
     }
 }

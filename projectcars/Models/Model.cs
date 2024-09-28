@@ -1,6 +1,4 @@
-﻿using projectcars.Entities;
-
-namespace projectcars.Models
+﻿namespace projectcars.Models
 {
     public class Model
     {

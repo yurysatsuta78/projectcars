@@ -1,9 +1,6 @@
 ﻿using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
-using Google.Apis.Util.Store;
 using projectcars.Interfaces.Services;
 using SixLabors.ImageSharp;
 
@@ -11,7 +8,7 @@ namespace projectcars.Services
 {
     public class GoogleDriveService : IGoogleDriveService
     {
-        private readonly string? _jsonKeyPath;
+        private readonly string _jsonKeyPath;
 
         public GoogleDriveService(IConfiguration configuration)
         {
