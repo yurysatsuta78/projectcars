@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.68.0.3544" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
@@ -22,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Images\" />
-    <Folder Include="Images\brands\" />
-    <Folder Include="Images\cars\" />
+    <Folder Include="wwwroot\images\brands\" />
+    <Folder Include="wwwroot\images\generations\" />
+    <Folder Include="wwwroot\images\cars\" />
   </ItemGroup>
 
 </Project>

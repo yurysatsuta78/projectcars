@@ -19,11 +19,11 @@ namespace projectcars.Services
             _mapper = mapper;
         }
 
-        public async Task Create(string brandName, IFormFile image)
+        public async Task Create(Brand brand)
         {
-            var brand = Brand.Create(Guid.NewGuid(), brandName);
 
-            var newImage = await _googleDriveService.UploadImage(image, null, brand.BrandId, null);
+
+            var newImage = await _googleDriveService.UploadImageToFolder(brand.Image, null, brand.BrandId, null);
             var uploadedImagePath = newImage.ImageUrl;
             try 
             {

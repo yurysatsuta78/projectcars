@@ -50,7 +50,19 @@ namespace projectcars.Migrations
                     b.Property<bool>("Abs")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("AirBags")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AirConditioner")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Asr")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("AutonomousHeater")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("BlindSpotSensor")
                         .HasColumnType("bit");
 
                     b.Property<string>("BodyType")
@@ -58,15 +70,37 @@ namespace projectcars.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("CarState")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("CityId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("ClimateControl")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<bool>("CruiseControl")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(350)
+                        .HasColumnType("nvarchar(350)");
 
                     b.Property<string>("DriveTrain")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("ElectricSeats")
+                        .HasColumnType("bit");
 
                     b.Property<int>("EnginePower")
                         .HasMaxLength(10)
@@ -84,24 +118,91 @@ namespace projectcars.Migrations
                     b.Property<bool>("Esp")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("FrontElectroWindows")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("GenerationId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("HeatedMirrors")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HeatedSeats")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HeatedSteeringWheel")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HeatedWindshield")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Immobilizer")
                         .HasColumnType("bit");
 
+                    b.Property<string>("InteriorColor")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("InteriorMaterial")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRegistred")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTradable")
                         .HasColumnType("bit");
 
                     b.Property<int>("Mileage")
                         .HasMaxLength(10)
                         .HasColumnType("int");
 
+                    b.Property<bool>("PanoramicRoof")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ParkingSensors")
+                        .HasColumnType("bit");
+
                     b.Property<double>("Price")
                         .HasMaxLength(50)
                         .HasColumnType("float");
 
+                    b.Property<int>("ProdYear")
+                        .HasMaxLength(5)
+                        .HasColumnType("int");
+
+                    b.Property<bool>("RainSensor")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RearElectroWindows")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RearViewCamera")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RegistrationCountry")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("RoofRails")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("Signaling")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SteeringWheelMultimedia")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("SunRoof")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TowBar")
                         .HasColumnType("bit");
 
                     b.Property<string>("TransmissionType")
@@ -111,9 +212,34 @@ namespace projectcars.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
                     b.HasIndex("GenerationId");
 
                     b.ToTable("Cars");
+                });
+
+            modelBuilder.Entity("projectcars.Entities.CityEntity", b =>
+                {
+                    b.Property<Guid>("CityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CityName")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<Guid>("RegionId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CityId");
+
+                    b.HasIndex("CityName");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("projectcars.Entities.GenerationEntity", b =>
@@ -122,10 +248,9 @@ namespace projectcars.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("EndYear")
-                        .IsRequired()
+                    b.Property<int>("EndYear")
                         .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
+                        .HasColumnType("int");
 
                     b.Property<string>("GenerationName")
                         .IsRequired()
@@ -138,10 +263,9 @@ namespace projectcars.Migrations
                     b.Property<bool>("Restyling")
                         .HasColumnType("bit");
 
-                    b.Property<string>("StartYear")
-                        .IsRequired()
+                    b.Property<int>("StartYear")
                         .HasMaxLength(5)
-                        .HasColumnType("nvarchar(5)");
+                        .HasColumnType("int");
 
                     b.HasKey("GenerationId");
 
@@ -214,15 +338,53 @@ namespace projectcars.Migrations
                     b.ToTable("Models");
                 });
 
+            modelBuilder.Entity("projectcars.Entities.RegionEntity", b =>
+                {
+                    b.Property<Guid>("RegionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("RegionName")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.HasKey("RegionId");
+
+                    b.HasIndex("RegionName")
+                        .IsUnique();
+
+                    b.ToTable("Regions");
+                });
+
             modelBuilder.Entity("projectcars.Entities.CarEntity", b =>
                 {
+                    b.HasOne("projectcars.Entities.CityEntity", "CityEntity")
+                        .WithMany("CarEntities")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("projectcars.Entities.GenerationEntity", "GenerationEntity")
                         .WithMany("CarEntities")
                         .HasForeignKey("GenerationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("CityEntity");
+
                     b.Navigation("GenerationEntity");
+                });
+
+            modelBuilder.Entity("projectcars.Entities.CityEntity", b =>
+                {
+                    b.HasOne("projectcars.Entities.RegionEntity", "RegionEntity")
+                        .WithMany("CityEntities")
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RegionEntity");
                 });
 
             modelBuilder.Entity("projectcars.Entities.GenerationEntity", b =>
@@ -280,6 +442,11 @@ namespace projectcars.Migrations
                     b.Navigation("ImageEntities");
                 });
 
+            modelBuilder.Entity("projectcars.Entities.CityEntity", b =>
+                {
+                    b.Navigation("CarEntities");
+                });
+
             modelBuilder.Entity("projectcars.Entities.GenerationEntity", b =>
                 {
                     b.Navigation("CarEntities");
@@ -290,6 +457,11 @@ namespace projectcars.Migrations
             modelBuilder.Entity("projectcars.Entities.ModelEntity", b =>
                 {
                     b.Navigation("GenerationEntities");
+                });
+
+            modelBuilder.Entity("projectcars.Entities.RegionEntity", b =>
+                {
+                    b.Navigation("CityEntities");
                 });
 #pragma warning restore 612, 618
         }

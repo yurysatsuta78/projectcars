@@ -14,7 +14,7 @@ namespace projectcars.Repositories
             _context = context;
         }
 
-        public async Task Create(Generation generation, Guid modelId)
+        public async Task Create(Generation generation)
         {
             var generationEntity = new GenerationEntity
             {
@@ -23,7 +23,7 @@ namespace projectcars.Repositories
                 Restyling = generation.Restyling,
                 StartYear = generation.StartYear,
                 EndYear = generation.EndYear,
-                ModelId = modelId
+                ModelId = generation.ModelId
             };
 
             await _context.Generations.AddAsync(generationEntity);
@@ -79,6 +79,7 @@ namespace projectcars.Repositories
             return await _context.Generations
                 .Include(b => b.ImageEntity)
                 .Include(b => b.ModelEntity)
+                .OrderBy(b => b.GenerationName)
                 .ToListAsync();
         }
     }

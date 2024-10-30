@@ -14,12 +14,13 @@ namespace projectcars.Repositories
             _context = context;
         }
 
-        public async Task Create(Model model, Guid brandId)
+        public async Task Create(Model model)
         {
             var modelEntity = new ModelEntity
             {
+                ModelId = model.ModelId,
                 ModelName = model.ModelName,
-                BrandId = brandId,
+                BrandId = model.BrandId
             };
 
             await _context.Models.AddAsync(modelEntity);
@@ -71,6 +72,7 @@ namespace projectcars.Repositories
         public async Task<List<ModelEntity>> GetModels()
         {
             var modelEntities = await _context.Models
+                .OrderBy(b => b.ModelName)
                 .ToListAsync();
 
             return modelEntities;

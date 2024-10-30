@@ -9,10 +9,14 @@ namespace projectcars.Services
     public class GoogleDriveService : IGoogleDriveService
     {
         private readonly string _jsonKeyPath;
+        private readonly string _apiKey;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public GoogleDriveService(IConfiguration configuration)
+        public GoogleDriveService(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _jsonKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, configuration["GoogleDrive:JsonKeyPath"]);
+            _apiKey = configuration["GoogleDrive:ApiKey"];
+            _webHostEnvironment = webHostEnvironment;
         }
 
         private async Task<GoogleCredential> GetCredentials()
@@ -36,6 +40,7 @@ namespace projectcars.Services
         public async Task<Models.Image> UploadImage(IFormFile image, Guid? carId, Guid? brandId, Guid? generationId)
         {
             var quality = 60;
+            var imgType = "image/jpeg";
 
             if (image != null)
             {
@@ -51,16 +56,26 @@ namespace projectcars.Services
                 var fileName = $"{Guid.NewGuid()}.jpg";
                 using var img = SixLabors.ImageSharp.Image.Load(image.OpenReadStream());
                 using var stream = new MemoryStream();
-                await img.SaveAsJpegAsync(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder { Quality = quality });
+
+                if (brandId != null)
+                {
+                    imgType = "image/png";
+                    await img.SaveAsPngAsync(stream);
+                }
+                else 
+                {
+                    await img.SaveAsJpegAsync(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder { Quality = quality });
+                }
+
                 stream.Position = 0;
 
                 var fileMetadata = new Google.Apis.Drive.v3.Data.File()
                 {
                     Name = fileName,
-                    MimeType = "image/jpeg",
+                    MimeType = imgType,
                     Parents = new List<string> { folderId }
                 };
-                FilesResource.CreateMediaUpload imageRequest = googleDriveService.Files.Create(fileMetadata, stream, "image/jpeg");
+                FilesResource.CreateMediaUpload imageRequest = googleDriveService.Files.Create(fileMetadata, stream, imgType);
                 imageRequest.Fields = "id";
                 await imageRequest.UploadAsync();
 
@@ -73,13 +88,63 @@ namespace projectcars.Services
                 var permissionRequest = googleDriveService.Permissions.Create(permission, imageRequest.ResponseBody.Id);
                 await permissionRequest.ExecuteAsync();
 
-                var fileUrl = $"https://drive.google.com/uc?id={imageRequest.ResponseBody.Id}";
+                //var fileUrl = $"https://drive.google.com/uc?id={imageRequest.ResponseBody.Id}";
+                var fileUrl = $"https://www.googleapis.com/drive/v3/files/{imageRequest.ResponseBody.Id}?alt=media&key={_apiKey}";
                 var newImage = Models.Image.Create(Guid.NewGuid(), fileUrl);
                 return newImage;
             }
             else
             {
                 throw new Exception();
+            }
+        }
+
+
+        public async Task<Models.Image> UploadImageToFolder(IFormFile image, Guid? carId, Guid? brandId, Guid? generationId) 
+        {
+            var quality = 60;
+
+            if (image != null)
+            {
+                var folderName = carId != null ? "cars" : (brandId != null ? "brands" : (generationId != null ? "generations" : null));
+                var fileType = brandId != null ? ".png" : ".jpeg";
+
+                if (folderName == null)
+                {
+                    throw new ArgumentException("At least one of carId, brandId or generationId must be provided.");
+                }
+
+                var fileName = $"{Guid.NewGuid()}{fileType}";
+                var folderPath = Path.Combine(_webHostEnvironment.ContentRootPath, "wwwroot", "images", folderName);
+                var filePath = Path.Combine(folderPath, fileName);
+
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                if (File.Exists(filePath))
+                {
+                    throw new InvalidOperationException($"A file with the name '{fileName}' already exists in the '{folderName}' folder.");
+                }
+
+                using var img = SixLabors.ImageSharp.Image.Load(image.OpenReadStream());
+                using var stream = new FileStream(filePath, FileMode.Create);
+                if (brandId == null)
+                {
+                    await img.SaveAsJpegAsync(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder { Quality = quality });
+                }
+                else
+                {
+                    await img.SaveAsPngAsync(stream);
+                }
+
+                var newImage = Models.Image.Create(Guid.NewGuid(), $"images/{folderName}/{fileName}");
+                return newImage;
+            }
+            else 
+            {
+                throw new ArgumentException(nameof(image), "Image file cannot be null");
             }
         }
     }

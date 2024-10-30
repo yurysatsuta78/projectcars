@@ -16,11 +16,9 @@ namespace projectcars.Services
             _mapper = mapper;
         }
 
-        public async Task Create(string modelName, Guid brandId)
+        public async Task Create(Model model)
         {
-            var model = Model.Create(brandId, modelName);
-
-            await _modelsRepository.Create(model, brandId);
+            await _modelsRepository.Create(model);
         }
 
         public async Task Update(Model model)

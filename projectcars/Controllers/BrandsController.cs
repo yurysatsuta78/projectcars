@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using projectcars.Contracts.Brands;
 using projectcars.Contracts.Cars;
+using projectcars.Models;
 using projectcars.Services;
 
 namespace projectcars.Controllers
@@ -21,7 +22,8 @@ namespace projectcars.Controllers
         {
             try
             {
-                await _brandsService.Create(req.BrandName, req.Image);
+                var brand = Brand.Create(Guid.NewGuid(), req.BrandName, req.Image);
+                await _brandsService.Create(brand);
 
                 return Ok();
             }
@@ -31,7 +33,7 @@ namespace projectcars.Controllers
             }
         }
 
-        [HttpPost("remove")]
+        [HttpDelete("remove")]
         public async Task<IActionResult> Remove([FromForm] RemoveBrandRequest req)
         {
             try

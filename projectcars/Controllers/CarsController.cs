@@ -21,24 +21,56 @@ namespace projectcars.Controllers
         {
             try 
             {
-                await _carsService.Create(
-                    req.Images,
-                    req.Price,
-                    req.EngineVolume,
-                    req.TransmissionType,
-                    req.BodyType,
-                    req.EngineType,
-                    req.DriveTrain,
-                    req.EnginePower,
-                    req.Mileage,
+                var car = Car.Create(
+                    Guid.NewGuid(), 
+                    req.Price, 
+                    req.EngineVolume, 
+                    req.TransmissionType, 
+                    req.BodyType, 
+                    req.EngineType, 
+                    req.DriveTrain, 
+                    req.EnginePower, 
+                    req.Mileage, 
+                    req.ProdYear, 
                     req.Color,
-                    req.Abs,
-                    req.Esp,
-                    req.Asr,
-                    req.Immobilazer,
+                    req.InteriorColor,
+                    req.InteriorMaterial,
+                    req.Description,
+                    req.CarState,
+                    req.RegistrationCountry,
+                    req.TowBar,
+                    req.RoofRails,
+                    req.SunRoof,
+                    req.PanoramicRoof,
+                    req.RainSensor,
+                    req.RearViewCamera,
+                    req.ParkingSensors,
+                    req.BlindSpotSensor,
+                    req.HeatedSeats,
+                    req.HeatedWindshield,
+                    req.HeatedMirrors,
+                    req.HeatedSteeringWheel,
+                    req.AutonomousHeater,
+                    req.ClimateControl,
+                    req.AirConditioner,
+                    req.CruiseControl,
+                    req.SteeringWheelMultimedia,
+                    req.ElectricSeats,
+                    req.FrontElectroWindows,
+                    req.RearElectroWindows,
+                    req.AirBags,
+                    req.IsTradable,
+                    req.IsRegistred,
+                    req.Abs, 
+                    req.Esp, 
+                    req.Asr, 
+                    req.Immobilizer, 
                     req.Signaling,
-                    req.GenerationId
+                    req.GenerationId,
+                    req.CityId,
+                    req.Images
                     );
+                await _carsService.Create(car);
 
                 return Ok();
             }
@@ -48,7 +80,7 @@ namespace projectcars.Controllers
             }
         }
 
-        [HttpPost("hide")]
+        [HttpPut("hide")]
         public async Task<IActionResult> Hide(HideCarRequest req)
         {
             try
@@ -62,7 +94,7 @@ namespace projectcars.Controllers
             }
         }
 
-        [HttpPost("remove")]
+        [HttpDelete("remove")]
         public async Task<IActionResult> Remove(RemoveCarRequest req)
         {
             try
@@ -89,12 +121,79 @@ namespace projectcars.Controllers
             }
         }
 
-        [HttpGet("filtred")]
-        public async Task<IActionResult> GetFiltred([FromQuery]FiltredCarsRequest req) 
+        [HttpGet("countactive")]
+        public async Task<IActionResult> CountActiveCars() 
         {
             try
             {
-                return Ok(await _carsService.GetFiltredCars(CarFilter.Create(req.MinPrice, req.MaxPrice, req.MinEngineVolume, req.MaxEngineVolume, req.TransmissionType, req.BodyType, req.EngineType, req.DriveTrain, req.MinEnginePower, req.MaxEnginePower, req.MinMileage, req.MaxMileage, req.Color, req.Abs, req.Esp, req.Asr, req.Immobilizer, req.Signaling)));
+                return Ok(await _carsService.CountActiveCars());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpPost("filtred")]
+        public async Task<IActionResult> GetFiltred([FromBody]FiltredCarsRequest req) 
+        {
+            try
+            {
+                var carFilter = CarFilter.Create(
+                    req.MinPrice, 
+                    req.MaxPrice, 
+                    req.MinEngineVolume, 
+                    req.MaxEngineVolume, 
+                    req.TransmissionType, 
+                    req.BodyType, 
+                    req.EngineType, 
+                    req.DriveTrain, 
+                    req.MinEnginePower, 
+                    req.MaxEnginePower, 
+                    req.MinMileage, 
+                    req.MaxMileage, 
+                    req.Color,
+                    req.InteriorColor,
+                    req.InteriorMaterial,
+                    req.Description,
+                    req.CarState,
+                    req.RegistrationCountry,
+                    req.TowBar,
+                    req.RoofRails,
+                    req.SunRoof,
+                    req.PanoramicRoof,
+                    req.RainSensor,
+                    req.RearViewCamera,
+                    req.ParkingSensors,
+                    req.BlindSpotSensor,
+                    req.HeatedSeats,
+                    req.HeatedWindshield,
+                    req.HeatedMirrors,
+                    req.HeatedSteeringWheel,
+                    req.AutonomousHeater,
+                    req.ClimateControl,
+                    req.AirConditioner,
+                    req.CruiseControl,
+                    req.SteeringWheelMultimedia,
+                    req.ElectricSeats,
+                    req.FrontElectroWindows,
+                    req.RearElectroWindows,
+                    req.AirBags,
+                    req.IsTradable,
+                    req.IsRegistred,
+                    req.Abs, 
+                    req.Esp, 
+                    req.Asr, 
+                    req.Immobilizer, 
+                    req.Signaling, 
+                    req.MinYear, 
+                    req.MaxYear, 
+                    req.GenerationId, 
+                    req.ModelId, 
+                    req.BrandId,
+                    req.CityId
+                    );
+                return Ok(await _carsService.GetFiltredCars(carFilter, req.Take, req.Skip));
             }
             catch (Exception ex)
             {

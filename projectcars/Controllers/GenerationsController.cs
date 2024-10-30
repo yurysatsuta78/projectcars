@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using projectcars.Contracts.Brands;
 using projectcars.Contracts.Generations;
+using projectcars.Models;
 using projectcars.Services;
 
 namespace projectcars.Controllers
@@ -21,7 +22,8 @@ namespace projectcars.Controllers
         {
             try
             {
-                await _generationsService.Create(req.GenerationName, req.Restyling, req.StartYear, req.EndYear, req.ModelId, req.Image);
+                var generation = Generation.Create(Guid.NewGuid(), req.GenerationName, req.Restyling, req.StartYear, req.EndYear, req.ModelId, req.Image);
+                await _generationsService.Create(generation);
 
                 return Ok();
             }
@@ -31,7 +33,7 @@ namespace projectcars.Controllers
             }
         }
 
-        [HttpPost("remove")]
+        [HttpDelete("remove")]
         public async Task<IActionResult> Remove([FromForm] RemoveGenerationRequest req)
         {
             try

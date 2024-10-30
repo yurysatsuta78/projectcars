@@ -5,7 +5,7 @@ namespace projectcars.Interfaces.Repositories
 {
     public interface IGenerationsRepository
     {
-        Task Create(Generation generation, Guid modelId);
+        Task Create(Generation generation);
         Task<GenerationEntity> GetById(Guid id);
         Task<List<GenerationEntity>> GetGenerations();
         Task Remove(GenerationEntity generationEntity);

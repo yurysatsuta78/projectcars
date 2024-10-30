@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using projectcars.Contracts.Cars;
 using projectcars.Contracts.Models;
+using projectcars.Models;
 using projectcars.Services;
 
 namespace projectcars.Controllers
@@ -21,7 +23,8 @@ namespace projectcars.Controllers
         {
             try
             {
-                await _modelsService.Create(req.ModelName, req.BrandId);
+                var model = Model.Create(Guid.NewGuid(), req.ModelName, req.BrandId);
+                await _modelsService.Create(model);
 
                 return Ok();
             }
@@ -31,7 +34,7 @@ namespace projectcars.Controllers
             }
         }
 
-        [HttpPost("remove")]
+        [HttpDelete("remove")]
         public async Task<IActionResult> Remove(RemoveCarRequest req)
         {
             try

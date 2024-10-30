@@ -3,9 +3,9 @@
     public class ModelEntity
     {
         public Guid ModelId { get; set; }
-        public string ModelName { get; set; } = String.Empty;
-        public BrandEntity? BrandEntity { get; set; }
+        public string? ModelName { get; set; }
+        public BrandEntity? BrandEntity { get; }
         public Guid BrandId { get; set; }
-        public ICollection<GenerationEntity>? GenerationEntities { get; set; }
+        public ICollection<GenerationEntity>? GenerationEntities { get; }
     }
 }

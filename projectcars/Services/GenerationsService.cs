@@ -20,19 +20,17 @@ namespace projectcars.Services
         }
 
         #region Create method
-        public async Task Create(string generationName, bool restyling, string startYear, string endYear, Guid modelId, IFormFile image)
+        public async Task Create(Generation generation)
         {
             var uploadedImagePath = String.Empty;
 
-            var generation = Generation.Create(Guid.NewGuid(), generationName, restyling, startYear, endYear);
-
-            var newImage = await _googleDriveService.UploadImage(image, null, null, generation.GenerationId);
+            var newImage = await _googleDriveService.UploadImageToFolder(generation.Image, null, null, generation.GenerationId);
             uploadedImagePath = newImage.ImageUrl;
             try
             {
                 using (var transaction = await _generationImageUOW.BeginTransactionAsync()) 
                 {
-                    await _generationImageUOW.Generations.Create(generation, modelId);
+                    await _generationImageUOW.Generations.Create(generation);
 
                     await _generationImageUOW.Images.Create(newImage, null, generation.GenerationId);
 

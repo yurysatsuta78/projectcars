@@ -8,8 +8,8 @@
             ImageUrl = imageUrl;
         }
 
-        public Guid Id { get; set; }
-        public string ImageUrl { get; set; }
+        public Guid Id { get; }
+        public string ImageUrl { get; }
 
         public static Image Create(Guid id, string imageUrl) 
         {

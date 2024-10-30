@@ -5,7 +5,7 @@ namespace projectcars.Interfaces.Repositories
 {
     public interface IModelsRepository
     {
-        Task Create(Model model, Guid brandId);
+        Task Create(Model model);
         Task<ModelEntity> GetById(Guid id);
         Task<List<ModelEntity>> GetModels();
         Task Remove(ModelEntity modelEntity);

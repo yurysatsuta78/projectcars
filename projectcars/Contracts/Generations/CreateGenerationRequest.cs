@@ -6,8 +6,8 @@ public record CreateGenerationRequest
 (
     [Required] string GenerationName,
     [Required] bool Restyling,
-    [Required] string StartYear,
-    [Required] string EndYear,
+    [Required] int StartYear,
+    [Required] int EndYear,
     [Required] Guid ModelId,
     [Required] IFormFile Image
 );

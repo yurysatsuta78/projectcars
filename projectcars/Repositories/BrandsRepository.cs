@@ -70,6 +70,7 @@ namespace projectcars.Repositories
         public async Task<List<BrandEntity>> GetBrands()
         {
             return await _context.Brands
+                .OrderBy(b => b.BrandName)
                 .Include(b => b.ImageEntity)
                 .ToListAsync();
         }

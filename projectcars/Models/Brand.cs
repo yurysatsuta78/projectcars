@@ -2,18 +2,20 @@
 {
     public class Brand
     {
-        private Brand(Guid brandId, string brandName)
+        private Brand(Guid brandId, string brandName, IFormFile image)
         {
             BrandName = brandName;
             BrandId = brandId;
+            Image = image;
         }
 
-        public static Brand Create(Guid brandId, string brandName)
+        public static Brand Create(Guid brandId, string brandName, IFormFile image)
         {
-            return new Brand(brandId, brandName);
+            return new Brand(brandId, brandName, image);
         }
 
-        public Guid BrandId { get; set; }
-        public string BrandName { get; set; }
+        public Guid BrandId { get; }
+        public string BrandName { get; }
+        public IFormFile Image { get; }
     }
 }

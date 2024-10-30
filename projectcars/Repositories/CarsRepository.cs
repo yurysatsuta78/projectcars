@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using projectcars.Entities;
 using projectcars.Interfaces.Repositories;
 using projectcars.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace projectcars.Repositories
 {
@@ -14,7 +16,7 @@ namespace projectcars.Repositories
             _context = context;
         }
 
-        public async Task Create(Car car, Guid generationId)
+        public async Task Create(Car car)
         {
             var carEntity = new CarEntity
             {
@@ -27,14 +29,44 @@ namespace projectcars.Repositories
                 DriveTrain = car.DriveTrain,
                 EnginePower = car.EnginePower,
                 Mileage = car.Mileage,
+                ProdYear = car.ProdYear,
                 Color = car.Color,
-                IsHidden = false,
+                InteriorColor = car.InteriorColor,
+                InteriorMaterial = car.InteriorMaterial,
+                Description = car.Description,
+                CarState = car.CarState,
+                RegistrationCountry = car.RegistrationCountry,
+                TowBar = car.TowBar,
+                RoofRails = car.RoofRails,
+                SunRoof = car.SunRoof,
+                PanoramicRoof = car.PanoramicRoof,
+                RainSensor = car.RainSensor,
+                RearViewCamera = car.RearViewCamera,
+                ParkingSensors = car.ParkingSensors,
+                BlindSpotSensor = car.BlindSpotSensor,
+                HeatedSeats = car.HeatedSeats,
+                HeatedWindshield = car.HeatedWindshield,
+                HeatedMirrors = car.HeatedMirrors,
+                HeatedSteeringWheel = car.HeatedSteeringWheel,
+                AutonomousHeater = car.AutonomousHeater,
+                ClimateControl = car.ClimateControl,
+                AirConditioner = car.AirConditioner,
+                CruiseControl = car.CruiseControl,
+                SteeringWheelMultimedia = car.SteeringWheelMultimedia,
+                ElectricSeats = car.ElectricSeats,
+                FrontElectroWindows = car.FrontElectroWindows,
+                RearElectroWindows = car.RearElectroWindows,
+                AirBags = car.AirBags,
+                IsTradable = car.IsTradable,
+                IsRegistred = car.IsRegistred,
                 Abs = car.Abs,
                 Esp = car.Esp,
                 Asr = car.Asr,
                 Immobilizer = car.Immobilizer,
                 Signaling = car.Signaling,
-                GenerationId = generationId
+                IsHidden = false,
+                GenerationId = car.GenerationId,
+                CityId = car.CityId,
             };
 
             await _context.Cars.AddAsync(carEntity);
@@ -98,14 +130,14 @@ namespace projectcars.Repositories
             }
         }
 
-        public async Task Remove(CarEntity carEntity) 
+        public async Task Remove(CarEntity carEntity)
         {
             if (carEntity != null)
             {
                 _context.Cars.Remove(carEntity);
                 await _context.SaveChangesAsync();
             }
-            else 
+            else
             {
                 throw new Exception();
             }
@@ -119,72 +151,80 @@ namespace projectcars.Repositories
                 .Include(b => b.GenerationEntity)
                 .ThenInclude(b => b.ModelEntity)
                 .ThenInclude(b => b.BrandEntity)
+                .Include(b => b.CityEntity)
+                .ThenInclude(b => b.RegionEntity)
                 .ToListAsync();
         }
 
-        public async Task<List<CarEntity>> GetFiltredCars(CarFilter filter) 
+        public async Task<int> CountActiveCars() 
         {
-            var filtredCars = _context.Cars.Where(b => b.Price >= filter.MinPrice && 
-            b.EngineVolume >= filter.MinEngineVolume && 
-            b.EnginePower >= filter.MinEnginePower && 
-            b.Mileage >= filter.MinMileage);
+            return await _context.Cars.Where(b => b.IsHidden == false).CountAsync();
+        }
 
-            if (filter.MaxPrice != null) 
-            {
-                filtredCars = filtredCars.Where(b => b.Price <= filter.MaxPrice);
-            }
-            if (filter.MaxEngineVolume != null) 
-            {
-                filtredCars = filtredCars.Where(b => b.EngineVolume <= filter.MaxEngineVolume);
-            }
-            if (filter.TransmissionType != null) 
-            {
-                filtredCars = filtredCars.Where(b => b.TransmissionType == filter.TransmissionType);
-            }
-            if (filter.BodyType != null) 
-            {
-                filtredCars = filtredCars.Where(b => b.BodyType == filter.BodyType);
-            }
-            if (filter.EngineType != null) 
-            {
-                filtredCars = filtredCars.Where(b => b.EngineType == filter.EngineType);
-            }
-            if (filter.DriveTrain != null) 
-            {
-                filtredCars = filtredCars.Where(b => b.DriveTrain == filter.DriveTrain);
-            }
-            if (filter.MaxEnginePower != null)
-            {
-                filtredCars = filtredCars.Where(b => b.EnginePower <= filter.MaxEnginePower);
-            }
-            if (filter.MaxMileage != null)
-            {
-                filtredCars = filtredCars.Where(b => b.Mileage <= filter.MaxMileage);
-            }
-            if (filter.Color != null)
-            {
-                filtredCars = filtredCars.Where(b => b.Color == filter.Color);
-            }
-            if (filter.Abs != null)
-            {
-                filtredCars = filtredCars.Where(b => b.Abs == filter.Abs);
-            }
-            if (filter.Esp != null)
-            {
-                filtredCars = filtredCars.Where(b => b.Esp == filter.Esp);
-            }
-            if (filter.Asr != null)
-            {
-                filtredCars = filtredCars.Where(b => b.Asr == filter.Asr);
-            }
-            if (filter.Immobilizer != null)
-            {
-                filtredCars = filtredCars.Where(b => b.Immobilizer == filter.Immobilizer);
-            }
-            if (filter.Signaling != null)
-            {
-                filtredCars = filtredCars.Where(b => b.Signaling == filter.Signaling);
-            }
+        public async Task<List<CarEntity>> GetFiltredCars(CarFilter filter, int take, int skip)
+        {
+            var filtredCars = _context.Cars.Where(b =>
+                    (filter.MinPrice == null || b.Price >= filter.MinPrice) &&
+                    (filter.MaxPrice == null || b.Price <= filter.MaxPrice) &&
+                    (filter.MinEngineVolume == null || b.EngineVolume >= filter.MinEngineVolume) &&
+                    (filter.MaxEngineVolume == null || b.EngineVolume <= filter.MaxEngineVolume) &&
+                    (filter.MinEnginePower == null || b.EnginePower >= filter.MinEnginePower) &&
+                    (filter.MaxEnginePower == null || b.EnginePower <= filter.MaxEnginePower) &&
+                    (filter.MinMileage == null || b.Mileage >= filter.MinMileage) &&
+                    (filter.MaxMileage == null || b.Mileage <= filter.MaxMileage) &&
+                    (filter.TransmissionType == null || b.TransmissionType == filter.TransmissionType) &&
+                    (filter.BodyType == null || b.BodyType == filter.BodyType) &&
+                    (filter.EngineType == null || b.EngineType == filter.EngineType) &&
+                    (filter.DriveTrain == null || b.DriveTrain == filter.DriveTrain) &&
+                    (filter.MinYear == null || b.ProdYear >= filter.MinYear) &&
+                    (filter.MaxYear == null || b.ProdYear <= filter.MaxYear) &&
+                    (filter.Color == null || b.Color == filter.Color) &&
+                    (filter.InteriorColor == null || b.InteriorColor == filter.InteriorColor) &&
+                    (filter.InteriorMaterial == null || b.InteriorMaterial == filter.InteriorMaterial) &&
+                    (filter.Description == null || b.Description == filter.Description) &&
+                    (filter.CarState == null || b.CarState == filter.CarState) &&
+                    (filter.RegistrationCountry == null || b.RegistrationCountry == filter.RegistrationCountry) &&
+                    (filter.TowBar == false || b.TowBar == filter.TowBar) &&
+                    (filter.RoofRails == false || b.RoofRails == filter.RoofRails) &&
+                    (filter.SunRoof == false || b.SunRoof == filter.SunRoof) &&
+                    (filter.PanoramicRoof == false || b.PanoramicRoof == filter.PanoramicRoof) &&
+                    (filter.RainSensor == false || b.RainSensor == filter.RainSensor) &&
+                    (filter.RearViewCamera == false || b.RearViewCamera == filter.RearViewCamera) &&
+                    (filter.ParkingSensors == false || b.ParkingSensors == filter.ParkingSensors) &&
+                    (filter.BlindSpotSensor == false || b.BlindSpotSensor == filter.BlindSpotSensor) &&
+                    (filter.HeatedSeats == false || b.HeatedSeats == filter.HeatedSeats) &&
+                    (filter.HeatedWindshield == false || b.HeatedWindshield == filter.HeatedWindshield) &&
+                    (filter.HeatedMirrors == false || b.HeatedMirrors == filter.HeatedMirrors) &&
+                    (filter.HeatedSteeringWheel == false || b.HeatedSteeringWheel == filter.HeatedSteeringWheel) &&
+                    (filter.AutonomousHeater == false || b.AutonomousHeater == filter.AutonomousHeater) &&
+                    (filter.ClimateControl == false || b.ClimateControl == filter.ClimateControl) &&
+                    (filter.AirConditioner == false || b.AirConditioner == filter.AirConditioner) &&
+                    (filter.CruiseControl == false || b.CruiseControl == filter.CruiseControl) &&
+                    (filter.SteeringWheelMultimedia == false || b.SteeringWheelMultimedia == filter.SteeringWheelMultimedia) &&
+                    (filter.ElectricSeats == false || b.ElectricSeats == filter.ElectricSeats) &&
+                    (filter.FrontElectroWindows == false || b.FrontElectroWindows == filter.FrontElectroWindows) &&
+                    (filter.RearElectroWindows == false || b.RearElectroWindows == filter.RearElectroWindows) &&
+                    (filter.AirBags == false || b.AirBags == filter.AirBags) &&
+                    (filter.IsTradable == false || b.IsTradable == filter.IsTradable) &&
+                    (filter.IsRegistred == false || b.IsRegistred == filter.IsRegistred) &&
+                    (filter.Abs == false || b.Abs == filter.Abs) &&
+                    (filter.Esp == false || b.Esp == filter.Esp) &&
+                    (filter.Asr == false || b.Asr == filter.Asr) &&
+                    (filter.Immobilizer == false || b.Immobilizer == filter.Immobilizer) &&
+                    (filter.Signaling == false || b.Signaling == filter.Signaling) &&
+                    (filter.GenerationId == null || b.GenerationId == filter.GenerationId) &&
+                    (filter.ModelId == null || b.GenerationEntity.ModelId == filter.ModelId) &&
+                    (filter.BrandId == null || b.GenerationEntity.ModelEntity.BrandId == filter.BrandId) &&
+                    (filter.CityId == null || b.CityId == filter.CityId) &&
+                    (b.IsHidden == false))
+                .Include(b => b.ImageEntities)
+                .Include(b => b.GenerationEntity)
+                .ThenInclude(b => b.ModelEntity)
+                .ThenInclude(b => b.BrandEntity)
+                .Include(b => b.CityEntity)
+                .ThenInclude(b => b.RegionEntity)
+                .Skip(skip).Take(take);
+
 
             return await filtredCars.ToListAsync();
         }

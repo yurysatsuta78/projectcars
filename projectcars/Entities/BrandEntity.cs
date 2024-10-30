@@ -3,8 +3,8 @@
     public class BrandEntity
     {
         public Guid BrandId { get; set; }
-        public string BrandName { get; set; } = String.Empty;
-        public ICollection<ModelEntity>? ModelEntities { get; set; }
+        public string? BrandName { get; set; }
+        public ICollection<ModelEntity>? ModelEntities { get; }
         public ImageEntity? ImageEntity { get; }
     }
 }

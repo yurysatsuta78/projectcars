@@ -17,8 +17,6 @@ namespace projectcars.Configuration
             builder.Property(p => p.GenerationName)
                 .IsRequired()
                 .HasMaxLength(50);
-            builder.HasIndex(p => p.GenerationName)
-                .IsUnique();
 
             builder.Property(p => p.Restyling)
                 .IsRequired();
@@ -30,6 +28,9 @@ namespace projectcars.Configuration
             builder.Property(p => p.EndYear)
                 .IsRequired()
                 .HasMaxLength(5);
+
+            builder.HasIndex(p => new { p.GenerationName, p.ModelId })
+                .IsUnique();
         }
     }
 }

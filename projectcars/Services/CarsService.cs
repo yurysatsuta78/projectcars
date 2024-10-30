@@ -20,18 +20,16 @@ namespace projectcars.Services
         }
 
         #region Create method
-        public async Task Create(IFormFile[] images, double price, double engineVolume, string transmissionType, string bodyType, string engineType, string driveTrain, int enginePower, int mileage, string color, bool abs, bool esp, bool asr, bool immobilazer, bool signaling, Guid generationId)
+        public async Task Create(Car car)
         {
             var uploadedImagePath = String.Empty;
             List<Models.Image> carImages = new List<Models.Image>();
 
-            var car = Car.Create(Guid.NewGuid(), price, engineVolume, transmissionType, bodyType, engineType, driveTrain, enginePower, mileage, color, abs, esp, asr, immobilazer, signaling);
-
             try 
             {
-                foreach (var image in images)
+                foreach (var image in car.Images)
                 {
-                    var newImage = await _googleDriveService.UploadImage(image, car.Id, null, null);
+                    var newImage = await _googleDriveService.UploadImageToFolder(image, car.Id, null, null);
                     carImages.Add(newImage);
                 }
             }
@@ -45,7 +43,7 @@ namespace projectcars.Services
                 {
                     using (var transaction = await _carsImageUOW.BeginTransactionAsync())
                     {
-                        await _carsImageUOW.Cars.Create(car, generationId);
+                        await _carsImageUOW.Cars.Create(car);
 
                         await _carsImageUOW.Images.CreateList(carImages, car.Id);
 
@@ -111,9 +109,14 @@ namespace projectcars.Services
             return _mapper.Map<List<CarDTO>>(await _carsImageUOW.Cars.GetActiveCars());
         }
 
-        public async Task<List<CarDTO>> GetFiltredCars(CarFilter filter) 
+        public async Task<int> CountActiveCars() 
         {
-            return _mapper.Map<List<CarDTO>>(await _carsImageUOW.Cars.GetFiltredCars(filter));
+            return await _carsImageUOW.Cars.CountActiveCars();
+        }
+
+        public async Task<List<CarDTO>> GetFiltredCars(CarFilter filter, int take, int skip) 
+        {
+            return _mapper.Map<List<CarDTO>>(await _carsImageUOW.Cars.GetFiltredCars(filter, take, skip));
         }
     }
 }
