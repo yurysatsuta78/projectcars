@@ -10,13 +10,15 @@ namespace projectcars.Configuration
         {
             builder.HasKey(k => k.Id);
 
-            //builder.HasMany(a => a.Ads)
-            //    .WithOne(a => a.UserEntity)
-            //    .HasForeignKey(a => a.Id);
+            builder.HasMany(a => a.UserAds)
+                .WithOne(a => a.UserEntity)
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //builder.HasMany(a => a.Featured)
-            //    .WithOne(a => a.UserEntity)
-            //    .HasForeignKey(a => a.Id);
+            builder.HasMany(a => a.FavouriteCars)
+                .WithOne(a => a.UserEntity)
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(p => p.Name)
                 .IsRequired()
@@ -25,12 +27,6 @@ namespace projectcars.Configuration
             builder.Property(p => p.SurName)
                 .IsRequired()
                 .HasMaxLength(50);
-
-            builder.Property(p => p.Email)
-                .IsRequired()
-                .HasMaxLength(100);
-            builder.HasIndex(p => p.Email)
-                .IsUnique();
 
             builder.Property(p => p.PhoneNumber)
                 .IsRequired()

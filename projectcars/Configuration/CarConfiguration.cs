@@ -18,6 +18,16 @@ namespace projectcars.Configuration
                 .WithMany(a => a.CarEntities)
                 .HasForeignKey(a => a.CityId);
 
+            builder.HasMany(a => a.FavouriteCars)
+                .WithOne(a => a.CarEntity)
+                .HasForeignKey(a => a.CarId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(a => a.UserAds)
+                .WithOne(a => a.CarEntity)
+                .HasForeignKey(a => a.CarId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(p => p.Price)
                 .IsRequired()
                 .HasMaxLength(50);

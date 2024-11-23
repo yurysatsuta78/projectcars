@@ -10,6 +10,11 @@ namespace projectcars.Configuration
         {
             builder.HasKey(k => k.RegionId);
 
+            builder.HasMany(a => a.CityEntities)
+                .WithOne(a => a.RegionEntity)
+                .HasForeignKey(a => a.RegionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(p => p.RegionName)
                 .IsRequired()
                 .HasMaxLength(80);

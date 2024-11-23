@@ -8,7 +8,7 @@
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
         public string? PasswordHash { get; set; }
-        public ICollection<CarEntity>? Ads { get; }
-        public ICollection<CarEntity>? Featured { get; }
+        public ICollection<UserAdEntity> UserAds { get; set; } = new List<UserAdEntity>();
+        public ICollection<FavouriteCarEntity>? FavouriteCars { get; set; } = new List<FavouriteCarEntity>();
     }
 }

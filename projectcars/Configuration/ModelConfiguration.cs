@@ -14,6 +14,11 @@ namespace projectcars.Configuration
                 .WithMany(a => a.ModelEntities)
                 .HasForeignKey(a => a.BrandId);
 
+            builder.HasMany(a => a.GenerationEntities)
+                .WithOne(a => a.ModelEntity)
+                .HasForeignKey(a => a.ModelId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(p => p.ModelName)
                 .IsRequired()
                 .HasMaxLength(100);

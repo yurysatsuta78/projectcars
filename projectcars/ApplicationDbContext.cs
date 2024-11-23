@@ -16,6 +16,9 @@ namespace projectcars
         public DbSet<ImageEntity> Images { get; set; }
         public DbSet<RegionEntity> Regions { get; set; }
         public DbSet<CityEntity> Cities { get; set; }
+        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<FavouriteCarEntity> FavouriteCars { get; set; }
+        public DbSet<UserAdEntity> UserAds { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,6 +29,9 @@ namespace projectcars
             modelBuilder.ApplyConfiguration(new ImageConfiguration());
             modelBuilder.ApplyConfiguration(new RegionConfiguration());
             modelBuilder.ApplyConfiguration(new CityConfiguration());
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new FavouriteCarConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAdConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

@@ -14,6 +14,10 @@ namespace projectcars.Configuration
                 .WithMany(a => a.CityEntities)
                 .HasForeignKey(a => a.RegionId);
 
+            builder.HasMany(a => a.CarEntities)
+                .WithOne(a => a.CityEntity)
+                .HasForeignKey(a => a.CityId);
+
             builder.Property(p => p.CityName)
                 .IsRequired()
                 .HasMaxLength(80);

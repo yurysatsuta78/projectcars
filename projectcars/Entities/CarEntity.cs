@@ -52,5 +52,7 @@
         public ICollection<ImageEntity>? ImageEntities { get; }
         public CityEntity? CityEntity { get; }
         public Guid CityId { get; set; }
+        public ICollection<UserAdEntity>? UserAds { get; set; } = new List<UserAdEntity>();
+        public ICollection<FavouriteCarEntity>? FavouriteCars { get; set; } = new List<FavouriteCarEntity>();
     }
 }

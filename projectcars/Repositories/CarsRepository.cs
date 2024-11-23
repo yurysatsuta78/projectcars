@@ -156,6 +156,11 @@ namespace projectcars.Repositories
                 .ToListAsync();
         }
 
+        public async Task AddCarToFavorites(Guid userId, Guid carId) 
+        {
+
+        }
+
         public async Task<int> CountActiveCars() 
         {
             return await _context.Cars.Where(b => b.IsHidden == false).CountAsync();
