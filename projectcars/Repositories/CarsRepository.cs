@@ -156,9 +156,34 @@ namespace projectcars.Repositories
                 .ToListAsync();
         }
 
-        public async Task AddCarToFavorites(Guid userId, Guid carId) 
+        public async Task AddCarToFavourites(Guid userId, Guid carId) 
         {
+            var favoriteCarEntity = new FavouriteCarEntity
+            {
+                UserId = userId,
+                CarId = carId,
+            };
 
+            await _context.FavouriteCars.AddAsync(favoriteCarEntity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveCarFromFavourites(Guid userId, Guid carId) 
+        {
+            var favouriteCarEntity = await _context.FavouriteCars
+                .FirstAsync(b => b.UserId == userId && 
+                b.CarId == carId);
+
+            _context.FavouriteCars.Remove(favouriteCarEntity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<CarEntity>> GetUserFavourites(Guid userId) 
+        {
+            var userFavourites = _context.FavouriteCars.Where(b => b.UserId == userId)
+                .Select(b => b.CarEntity);
+
+            return await userFavourites.ToListAsync();
         }
 
         public async Task<int> CountActiveCars() 

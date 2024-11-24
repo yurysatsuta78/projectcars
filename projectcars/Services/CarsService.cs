@@ -118,5 +118,20 @@ namespace projectcars.Services
         {
             return _mapper.Map<List<CarDTO>>(await _carsImageUOW.Cars.GetFiltredCars(filter, take, skip));
         }
+
+        public async Task AddCarToFavourites(Guid userId, Guid carId) 
+        {
+            await _carsImageUOW.Cars.AddCarToFavourites(userId, carId);
+        }
+
+        public async Task RemoveCarFromFavourites(Guid userId, Guid carId) 
+        {
+            await _carsImageUOW.Cars.RemoveCarFromFavourites(userId, carId);
+        }
+
+        public async Task<List<CarDTO>> GetUserFavourites(Guid userId) 
+        {
+            return _mapper.Map<List<CarDTO>>(await _carsImageUOW.Cars.GetUserFavourites(userId));
+        }
     }
 }

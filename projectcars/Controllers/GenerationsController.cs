@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using projectcars.Contracts.Brands;
 using projectcars.Contracts.Generations;
 using projectcars.Models;
@@ -18,6 +19,7 @@ namespace projectcars.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize]
         public async Task<IActionResult> Create([FromForm] CreateGenerationRequest req)
         {
             try
@@ -34,6 +36,7 @@ namespace projectcars.Controllers
         }
 
         [HttpDelete("remove")]
+        [Authorize]
         public async Task<IActionResult> Remove([FromForm] RemoveGenerationRequest req)
         {
             try

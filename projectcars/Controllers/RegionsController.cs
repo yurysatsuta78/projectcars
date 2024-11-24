@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using projectcars.Contracts.Brands;
 using projectcars.Contracts.Regions;
 using projectcars.Models;
@@ -18,6 +19,7 @@ namespace projectcars.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize]
         public async Task<IActionResult> Create([FromForm] CreateRegionRequest req)
         {
             try
@@ -34,6 +36,7 @@ namespace projectcars.Controllers
         }
 
         [HttpDelete("remove")]
+        [Authorize]
         public async Task<IActionResult> Remove([FromForm] RemoveRegionRequest req)
         {
             try
@@ -49,6 +52,7 @@ namespace projectcars.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize]
         public async Task<IActionResult> Update([FromForm] UpdateRegionRequest req) 
         {
             try
@@ -65,6 +69,7 @@ namespace projectcars.Controllers
         }
 
         [HttpGet("all")]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
             try

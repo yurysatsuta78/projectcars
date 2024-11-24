@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using projectcars.Contracts.Cars;
 using projectcars.Models;
 using projectcars.Services;
@@ -17,6 +18,7 @@ namespace projectcars.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize]
         public async Task<IActionResult> Create([FromForm] CreateCarRequest req) 
         {
             try 
@@ -80,7 +82,56 @@ namespace projectcars.Controllers
             }
         }
 
+        [HttpPost("addfavourite")]
+        [Authorize]
+        public async Task<IActionResult> AddCarToFavourites([FromForm] ToFavouritesCarRequest req) 
+        {
+            try
+            {
+                await _carsService.AddCarToFavourites(req.UserId, req.CarId);
+
+                return Ok();
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("removefavourite")]
+        [Authorize]
+        public async Task<IActionResult> RemoveCarFromFavourites([FromForm] FromFavouritesCarRequest req)
+        {
+            try
+            {
+                await _carsService.RemoveCarFromFavourites(req.UserId, req.CarId);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("userfavourites")]
+        [Authorize]
+        public async Task<IActionResult> GetUserFavourites([FromForm] GetUserFavouritesRequest req) 
+        {
+            try
+            {
+                await _carsService.GetUserFavourites(req.UserId);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPut("hide")]
+        [Authorize]
         public async Task<IActionResult> Hide(HideCarRequest req)
         {
             try
@@ -95,6 +146,7 @@ namespace projectcars.Controllers
         }
 
         [HttpDelete("remove")]
+        [Authorize]
         public async Task<IActionResult> Remove(RemoveCarRequest req)
         {
             try

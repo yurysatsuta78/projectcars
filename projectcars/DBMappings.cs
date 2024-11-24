@@ -7,6 +7,7 @@ using projectcars.DTO.Image;
 using projectcars.DTO.Model;
 using projectcars.DTO.Region;
 using projectcars.Entities;
+using projectcars.Models;
 
 namespace projectcars
 {
@@ -37,6 +38,7 @@ namespace projectcars
             CreateMap<ImageEntity, ImageDTO>();
             CreateMap<CityEntity, CityDTO>();
             CreateMap<RegionEntity, RegionDTO>();
+            CreateMap<UserEntity, User>();
         }
     }
 }

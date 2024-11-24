@@ -1,7 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using projectcars;
+using projectcars.Interfaces.Auth;
 using projectcars.Interfaces.Repositories;
 using projectcars.Interfaces.Services;
 using projectcars.Interfaces.UnitsOfWork;
@@ -9,12 +13,18 @@ using projectcars.MiddleWare;
 using projectcars.Repositories;
 using projectcars.Services;
 using projectcars.UnitsOfWork;
+using SixLabors.ImageSharp;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 
 // Add services to the container.
+
+services.AddApiAuthentication(builder.Configuration);
+
+services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 
 services.AddCors(options =>
 {
@@ -41,14 +51,18 @@ services.AddScoped<IGenerationsRepository, GenerationsRepository>();
 services.AddScoped<IImagesRepository, ImagesRepository>();
 services.AddScoped<ICitiesRepository, CitiesRepository>();
 services.AddScoped<IRegionsRepository, RegionsRepository>();
+services.AddScoped<IUsersRepository, UsersRepository>();
 
 services.AddScoped<IGoogleDriveService, GoogleDriveService>();
+services.AddScoped<IJwtProvider, JwtProvider>();
+services.AddScoped<IPasswordHasher, PasswordHasher>();
 services.AddScoped<CarsService>();
 services.AddScoped<BrandsService>();
 services.AddScoped<ModelsService>();
 services.AddScoped<GenerationsService>();
 services.AddScoped<CitiesService>();
 services.AddScoped<RegionsService>();
+services.AddScoped<UsersService>();
 
 services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -75,6 +89,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
