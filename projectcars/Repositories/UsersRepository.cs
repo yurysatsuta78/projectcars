@@ -27,14 +27,22 @@ namespace projectcars.Repositories
                 PhoneNumber = user.PhoneNumber,
                 PasswordHash = user.PasswordHash
             };
+            var userRole = new UserRoleEntity()
+            {
+                UserId = user.Id,
+                RoleId = 2
+            };
 
             await _context.Users.AddAsync(newUser);
+            await _context.UserRoles.AddAsync(userRole);
             await _context.SaveChangesAsync();
         }
 
         public async Task<User> GetByPhoneNumber(string phoneNumber)
         {
-            var userEntity = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            var userEntity = await _context.Users.AsNoTracking()
+                .Include(p => p.Roles)
+                .FirstOrDefaultAsync(p => p.PhoneNumber == phoneNumber);
 
             if (userEntity == null) 
             {

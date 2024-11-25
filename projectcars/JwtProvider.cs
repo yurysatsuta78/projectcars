@@ -14,10 +14,17 @@ namespace projectcars
 
         public string GenerateToken(User user)
         {
-            Claim[] claims = [new("userId", user.Id.ToString()),
-                new("name", user.Name),
-                new("surname", user.SurName),
-                new("phoneNumber", user.PhoneNumber)];
+            var claims = new List<Claim>
+            {
+                new Claim("userId", user.Id.ToString()),
+                new Claim("name", user.Name),
+                new Claim("surname", user.SurName),
+                new Claim("phoneNumber", user.PhoneNumber)
+            };
+            foreach (var role in user.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.Name));
+            }
 
             var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),

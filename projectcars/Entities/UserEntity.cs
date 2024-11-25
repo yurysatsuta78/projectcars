@@ -7,7 +7,8 @@
         public string? SurName { get; set; }
         public string? PhoneNumber { get; set; }
         public string? PasswordHash { get; set; }
-        public ICollection<UserAdEntity> UserAds { get; set; } = new List<UserAdEntity>();
-        public ICollection<FavouriteCarEntity>? FavouriteCars { get; set; } = new List<FavouriteCarEntity>();
+        public ICollection<CarEntity> UserAds { get; set; } = new List<CarEntity>();
+        public ICollection<CarEntity> FavouriteCars { get; set; } = new List<CarEntity>();
+        public ICollection<RoleEntity> Roles { get; set; } = new List<RoleEntity>();
     }
 }

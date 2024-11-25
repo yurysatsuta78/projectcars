@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using projectcars.Entities;
+using projectcars.Enums;
 
 namespace projectcars.Configuration
 {
@@ -10,15 +11,21 @@ namespace projectcars.Configuration
         {
             builder.HasKey(k => k.Id);
 
-            builder.HasMany(a => a.UserAds)
-                .WithOne(a => a.UserEntity)
-                .HasForeignKey(a => a.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(p => p.UserAds)
+                .WithOne(p => p.UserEntity)
+                .HasForeignKey(p => p.UserId);
 
-            builder.HasMany(a => a.FavouriteCars)
-                .WithOne(a => a.UserEntity)
-                .HasForeignKey(a => a.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(p => p.FavouriteCars)
+                .WithMany(p => p.UsersByFavourites)
+                .UsingEntity<UserFavouriteCarEntity>(
+                    l => l.HasOne(b => b.CarEntity).WithMany().HasForeignKey(r => r.CarId).OnDelete(DeleteBehavior.Restrict),
+                    r => r.HasOne<UserEntity>().WithMany().HasForeignKey(l => l.UserId).OnDelete(DeleteBehavior.Restrict));
+
+            builder.HasMany(p => p.Roles)
+                .WithMany(p => p.Users)
+                .UsingEntity<UserRoleEntity>(
+                    l => l.HasOne<RoleEntity>().WithMany().HasForeignKey(r => r.RoleId).OnDelete(DeleteBehavior.Restrict),
+                    r => r.HasOne<UserEntity>().WithMany().HasForeignKey(l => l.UserId).OnDelete(DeleteBehavior.Restrict));
 
             builder.Property(p => p.Name)
                 .IsRequired()

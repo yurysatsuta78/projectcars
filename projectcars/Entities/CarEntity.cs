@@ -49,10 +49,11 @@
         public bool IsHidden { get; set; } //Скрыта?(В случае удаления объявления)
         public GenerationEntity? GenerationEntity { get; }
         public Guid GenerationId { get; set; }
-        public ICollection<ImageEntity>? ImageEntities { get; }
+        public ICollection<ImageEntity> ImageEntities { get; } = new List<ImageEntity>();
         public CityEntity? CityEntity { get; }
         public Guid CityId { get; set; }
-        public ICollection<UserAdEntity>? UserAds { get; set; } = new List<UserAdEntity>();
-        public ICollection<FavouriteCarEntity>? FavouriteCars { get; set; } = new List<FavouriteCarEntity>();
+        public ICollection<UserEntity> UsersByFavourites { get; set; } = new List<UserEntity>();
+        public UserEntity? UserEntity { get; set; }
+        public Guid UserId { get; set; }
     }
 }

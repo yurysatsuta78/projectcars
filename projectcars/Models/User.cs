@@ -18,6 +18,7 @@ namespace projectcars.Models
         public string SurName { get; set; }
         public string PhoneNumber { get; set; }
         public string PasswordHash { get; set; }
+        public ICollection<RoleEntity> Roles { get; set; } = new List<RoleEntity>();
 
         public static User Create(Guid id, string name, string surname, string phoneNumber, string passwordHash) 
         {

@@ -20,7 +20,7 @@ namespace projectcars.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Create([FromForm] CreateModelRequest req)
         {
             try
@@ -37,7 +37,7 @@ namespace projectcars.Controllers
         }
 
         [HttpDelete("remove")]
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Remove(RemoveCarRequest req)
         {
             try

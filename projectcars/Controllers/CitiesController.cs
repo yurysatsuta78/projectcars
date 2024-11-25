@@ -19,7 +19,7 @@ namespace projectcars.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Create([FromForm] CreateCityRequest req)
         {
             try
@@ -36,7 +36,7 @@ namespace projectcars.Controllers
         }
 
         [HttpDelete("remove")]
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Remove([FromForm] RemoveCityRequest req)
         {
             try
@@ -52,7 +52,7 @@ namespace projectcars.Controllers
         }
 
         [HttpPut("update")]
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> Update([FromForm] UpdateCityRequest req)
         {
             try
@@ -69,7 +69,7 @@ namespace projectcars.Controllers
         }
 
         [HttpGet("all")]
-        [Authorize]
+        [Authorize(Policy = "RequireAdminRole")]
         public async Task<IActionResult> GetAll()
         {
             try

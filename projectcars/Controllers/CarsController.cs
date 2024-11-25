@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using projectcars.Contracts.Cars;
 using projectcars.Models;
 using projectcars.Services;
+using System.Security.Claims;
 
 namespace projectcars.Controllers
 {
@@ -18,11 +19,19 @@ namespace projectcars.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize]
+        [Authorize(Policy = "RequireUserRole")]
         public async Task<IActionResult> Create([FromForm] CreateCarRequest req) 
         {
             try 
             {
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "userId");
+                var userId = userIdClaim?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized("User  ID is missing in the token.");
+                }
+
                 var car = Car.Create(
                     Guid.NewGuid(), 
                     req.Price, 
@@ -70,7 +79,8 @@ namespace projectcars.Controllers
                     req.Signaling,
                     req.GenerationId,
                     req.CityId,
-                    req.Images
+                    req.Images,
+                    Guid.Parse(userId)
                     );
                 await _carsService.Create(car);
 
@@ -83,12 +93,20 @@ namespace projectcars.Controllers
         }
 
         [HttpPost("addfavourite")]
-        [Authorize]
+        [Authorize(Policy = "RequireUserRole")]
         public async Task<IActionResult> AddCarToFavourites([FromForm] ToFavouritesCarRequest req) 
         {
             try
             {
-                await _carsService.AddCarToFavourites(req.UserId, req.CarId);
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "userId");
+                var userId = userIdClaim?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized("User  ID is missing in the token.");
+                }
+
+                await _carsService.AddCarToFavourites(Guid.Parse(userId), req.CarId);
 
                 return Ok();
             }
@@ -99,12 +117,20 @@ namespace projectcars.Controllers
         }
 
         [HttpPost("removefavourite")]
-        [Authorize]
+        [Authorize(Policy = "RequireUserRole")]
         public async Task<IActionResult> RemoveCarFromFavourites([FromForm] FromFavouritesCarRequest req)
         {
             try
             {
-                await _carsService.RemoveCarFromFavourites(req.UserId, req.CarId);
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "userId");
+                var userId = userIdClaim?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized("User  ID is missing in the token.");
+                }
+
+                await _carsService.RemoveCarFromFavourites(Guid.Parse(userId), req.CarId);
 
                 return Ok();
             }
@@ -115,14 +141,20 @@ namespace projectcars.Controllers
         }
 
         [HttpGet("userfavourites")]
-        [Authorize]
-        public async Task<IActionResult> GetUserFavourites([FromForm] GetUserFavouritesRequest req) 
+        [Authorize(Policy = "RequireUserRole")]
+        public async Task<IActionResult> GetUserFavourites() 
         {
             try
             {
-                await _carsService.GetUserFavourites(req.UserId);
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "userId");
+                var userId = userIdClaim?.Value;
 
-                return Ok();
+                if (userId == null)
+                {
+                    return Unauthorized("User  ID is missing in the token.");
+                }
+
+                return Ok(await _carsService.GetUserFavourites(Guid.Parse(userId)));
             }
             catch (Exception ex)
             {
@@ -131,7 +163,7 @@ namespace projectcars.Controllers
         }
 
         [HttpPut("hide")]
-        [Authorize]
+        [Authorize(Policy = "RequireUserRole")]
         public async Task<IActionResult> Hide(HideCarRequest req)
         {
             try
@@ -146,7 +178,7 @@ namespace projectcars.Controllers
         }
 
         [HttpDelete("remove")]
-        [Authorize]
+        [Authorize(Policy = "RequireUserRole")]
         public async Task<IActionResult> Remove(RemoveCarRequest req)
         {
             try

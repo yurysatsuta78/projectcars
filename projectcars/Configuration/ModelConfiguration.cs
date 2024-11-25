@@ -10,10 +10,6 @@ namespace projectcars.Configuration
         {
             builder.HasKey(k => k.ModelId);
 
-            builder.HasOne(a => a.BrandEntity)
-                .WithMany(a => a.ModelEntities)
-                .HasForeignKey(a => a.BrandId);
-
             builder.HasMany(a => a.GenerationEntities)
                 .WithOne(a => a.ModelEntity)
                 .HasForeignKey(a => a.ModelId)

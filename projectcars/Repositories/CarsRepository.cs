@@ -67,6 +67,7 @@ namespace projectcars.Repositories
                 IsHidden = false,
                 GenerationId = car.GenerationId,
                 CityId = car.CityId,
+                UserId = car.UserId,
             };
 
             await _context.Cars.AddAsync(carEntity);
@@ -158,7 +159,7 @@ namespace projectcars.Repositories
 
         public async Task AddCarToFavourites(Guid userId, Guid carId) 
         {
-            var favoriteCarEntity = new FavouriteCarEntity
+            var favoriteCarEntity = new UserFavouriteCarEntity
             {
                 UserId = userId,
                 CarId = carId,
@@ -180,10 +181,25 @@ namespace projectcars.Repositories
 
         public async Task<List<CarEntity>> GetUserFavourites(Guid userId) 
         {
-            var userFavourites = _context.FavouriteCars.Where(b => b.UserId == userId)
-                .Select(b => b.CarEntity);
+            var user = await _context.Users
+                    .Where(b => b.Id == userId)
+                    .Include(b => b.FavouriteCars)
+                        .ThenInclude(b => b.ImageEntities)
+                    .Include(b => b.FavouriteCars)
+                        .ThenInclude(b => b.GenerationEntity)
+                            .ThenInclude(b => b.ModelEntity)
+                                .ThenInclude(b => b.BrandEntity)
+                    .Include(b => b.FavouriteCars)
+                        .ThenInclude(b => b.CityEntity)
+                            .ThenInclude(b => b.RegionEntity)
+                    .FirstOrDefaultAsync();
 
-            return await userFavourites.ToListAsync();
+            if (user == null)
+            {
+                throw new Exception("User Not Found");
+            }
+
+            return user.FavouriteCars.ToList();
         }
 
         public async Task<int> CountActiveCars() 

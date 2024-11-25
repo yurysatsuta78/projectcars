@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using projectcars;
 
@@ -11,9 +12,11 @@ using projectcars;
 namespace projectcars.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241125151513_RolesAdded")]
+    partial class RolesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -210,16 +213,11 @@ namespace projectcars.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
 
                     b.HasIndex("GenerationId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Cars");
                 });
@@ -453,7 +451,7 @@ namespace projectcars.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoleEntity");
                 });
 
             modelBuilder.Entity("projectcars.Entities.CarEntity", b =>
@@ -470,17 +468,9 @@ namespace projectcars.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("projectcars.Entities.UserEntity", "UserEntity")
-                        .WithMany("UserAds")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("CityEntity");
 
                     b.Navigation("GenerationEntity");
-
-                    b.Navigation("UserEntity");
                 });
 
             modelBuilder.Entity("projectcars.Entities.CityEntity", b =>
@@ -542,13 +532,13 @@ namespace projectcars.Migrations
                     b.HasOne("projectcars.Entities.CarEntity", "CarEntity")
                         .WithMany()
                         .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("projectcars.Entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CarEntity");
@@ -559,13 +549,13 @@ namespace projectcars.Migrations
                     b.HasOne("projectcars.Entities.RoleEntity", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("projectcars.Entities.UserEntity", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -601,11 +591,6 @@ namespace projectcars.Migrations
             modelBuilder.Entity("projectcars.Entities.RegionEntity", b =>
                 {
                     b.Navigation("CityEntities");
-                });
-
-            modelBuilder.Entity("projectcars.Entities.UserEntity", b =>
-                {
-                    b.Navigation("UserAds");
                 });
 #pragma warning restore 612, 618
         }

@@ -39,7 +39,11 @@ namespace projectcars
                 };
             });
 
-            services.AddAuthorization();
+            services.AddAuthorization(options => 
+            {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+            });
         }
     }
 }

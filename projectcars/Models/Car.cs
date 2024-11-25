@@ -50,7 +50,8 @@
                 bool signaling,
                 Guid generationId,
                 Guid cityId,
-                IFormFile[] images
+                IFormFile[] images,
+                Guid userId
             )
         {
             Id = id;
@@ -100,6 +101,7 @@
             GenerationId = generationId;
             CityId = cityId;
             Images = images;
+            UserId = userId;
         }
 
         public static Car Create
@@ -150,7 +152,8 @@
                 bool signaling,
                 Guid generationId,
                 Guid cityId,
-                IFormFile[] images
+                IFormFile[] images,
+                Guid userId
             )
         {
             return new Car
@@ -201,7 +204,8 @@
                     signaling,
                     generationId,
                     cityId,
-                    images
+                    images,
+                    userId
                 );
         }
 
@@ -252,5 +256,6 @@
         public Guid GenerationId { get; }
         public Guid CityId { get; }
         public IFormFile[] Images { get; }
+        public Guid UserId { get; set; }
     }
 }
