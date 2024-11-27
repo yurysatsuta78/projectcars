@@ -51,5 +51,13 @@ namespace projectcars.Repositories
 
             return _mapper.Map<User>(userEntity);
         }
+
+        public async Task<User> GetUserDataById(Guid userId) 
+        {
+            var userEntity = await _context.Users.AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == userId);
+
+            return _mapper.Map<User>(userEntity);
+        }
     }
 }

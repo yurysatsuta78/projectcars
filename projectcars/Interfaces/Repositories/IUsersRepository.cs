@@ -6,5 +6,6 @@ namespace projectcars.Interfaces.Repositories
     {
         Task Add(User user);
         Task<User> GetByPhoneNumber(string phoneNumber);
+        Task<User> GetUserDataById(Guid userId);
     }
 }

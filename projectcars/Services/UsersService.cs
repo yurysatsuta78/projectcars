@@ -1,4 +1,7 @@
-﻿using projectcars.Interfaces.Auth;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using projectcars.DTO;
+using projectcars.Interfaces.Auth;
 using projectcars.Interfaces.Repositories;
 using projectcars.Models;
 
@@ -26,7 +29,7 @@ namespace projectcars.Services
             await _usersRepository.Add(user);
         }
 
-        public async Task<string> Login(string phoneNumber, string password)
+        public async Task<LoginDTO> Login(string phoneNumber, string password)
         {
             var user = await _usersRepository.GetByPhoneNumber(phoneNumber);
 
@@ -39,7 +42,20 @@ namespace projectcars.Services
 
             var token = _jwtProvider.GenerateToken(user);
 
-            return token;
+            var loginDto = new LoginDTO
+            {
+                Name = user.Name,
+                Surname = user.SurName,
+                PhoneNumber = phoneNumber,
+                Token = token
+            };
+
+            return loginDto;
+        }
+
+        public async Task<User> GetUserDataById(Guid userId) 
+        {
+            return await _usersRepository.GetUserDataById(userId);
         }
     }
 }
