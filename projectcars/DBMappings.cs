@@ -21,7 +21,8 @@ namespace projectcars
                 .ForPath(dest => dest.BrandName, opt => opt.MapFrom(src => src.GenerationEntity.ModelEntity.BrandEntity.BrandName))
                 .ForPath(dest => dest.CityName, opt => opt.MapFrom(src => src.CityEntity.CityName))
                 .ForPath(dest => dest.RegionName, opt => opt.MapFrom(src => src.CityEntity.RegionEntity.RegionName))
-                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.ImageEntities));
+                .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.ImageEntities))
+                .ForPath(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.UserEntity.PhoneNumber));
 
 
             CreateMap<BrandEntity, BrandDTO>()

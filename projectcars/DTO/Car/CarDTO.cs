@@ -53,6 +53,7 @@ namespace projectcars.DTO.Car
         public string? BrandName { get; set; }
         public string? CityName { get; set; }
         public string? RegionName { get; set; }
+        public string? PhoneNumber { get; set; }
         public List<ImageDTO>? Images { get; set; }
     }
 }

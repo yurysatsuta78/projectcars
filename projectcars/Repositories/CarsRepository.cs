@@ -154,6 +154,7 @@ namespace projectcars.Repositories
                 .ThenInclude(b => b.BrandEntity)
                 .Include(b => b.CityEntity)
                 .ThenInclude(b => b.RegionEntity)
+                .Include(b => b.UserEntity)
                 .ToListAsync();
         }
 
@@ -269,6 +270,7 @@ namespace projectcars.Repositories
                 .ThenInclude(b => b.BrandEntity)
                 .Include(b => b.CityEntity)
                 .ThenInclude(b => b.RegionEntity)
+                .Include(b => b.UserEntity)
                 .Skip(skip).Take(take);
 
 

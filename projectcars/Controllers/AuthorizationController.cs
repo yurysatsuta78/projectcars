@@ -29,6 +29,7 @@ namespace projectcars.Controllers
                 {
                     HttpOnly = true,
                     Secure = true,
+                    SameSite = SameSiteMode.None
                 });
 
                 var response = new

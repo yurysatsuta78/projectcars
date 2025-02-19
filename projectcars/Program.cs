@@ -91,6 +91,8 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
+app.UseCors();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
@@ -106,7 +108,5 @@ app.UseWhen(context => context.Request.Path.StartsWithSegments("/Cars/create"),
 //app.UseMiddleware<CarCreateValidator>(app.Services.GetService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetService<IGenerationsRepository>());
 
 app.MapControllers();
-
-app.UseCors();
 
 app.Run();
